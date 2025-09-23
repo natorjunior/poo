@@ -512,6 +512,27 @@ public class Main {
         
         </section>
 
+
+
+<section data-auto-animate>
+<pre data-id="code-4" style="height: 70vh;"><code class="language-java" data-trim data-line-numbers>
+// Produto.java
+public class Produto {
+  String nome;
+  double preco;
+ 
+  public Produto(String nome, double preco) {
+    this.nome = nome;
+    this.preco = preco;
+  }
+ 
+  String detalhes() {
+    return nome + " - R$ " + String.format("%.2f", preco);
+  }
+}
+</code></pre>
+        </section>
+
         <section data-auto-animate>
 <pre data-id="code-4" style="height: 70vh;"><code class="language-java" data-trim data-line-numbers>
 import java.util.Scanner;
