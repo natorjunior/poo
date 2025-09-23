@@ -1,11 +1,597 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POO</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula - Java: Classes, Construtores e Arrays</title>
+
+  <!-- Reveal.js -->
+  <link rel="stylesheet" href="./dist/reveal.css">
+  <link rel="stylesheet" href="./dist/theme/white.css" id="theme">
+  <!-- Tema para código -->
+  <link rel="stylesheet" href="./plugin/highlight/atom-one-dark.css">
+
+  <!-- Menu plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.css" rel="stylesheet">
+
+  <style>
+  .reveal h1, .reveal h2 { color: #0056b3; }
+  .reveal pre code { font-size: 1em; background: #222; border-radius: 8px; padding: 10px; }
+    .reveal p { font-size: 1.1em; }
+    .example-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .card { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e9f2ff; color: #0056b3; font-weight: 600; font-size: .8em; }
+    .muted { color: #6c757d; font-size: .9em; }
+  /* Extra pedagogia */
+  .objectives { background:#f8f9fa; padding:24px 28px; border-left:6px solid #0056b3; border-radius:14px; }
+  .objectives h4 { margin-top:0; color:#0056b3; }
+  .objectives ul { margin:0; padding-left:20px; }
+  .objectives li { margin:8px 0; }
+  .diagram { font-family:'JetBrains Mono', monospace; background:#1e2933; color:#cfd8dc; padding:18px 22px; border-radius:12px; font-size:.72em; line-height:1.35; }
+  .mini-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:24px; }
+  .mini { background:#f8f9fa; padding:14px 16px; border-radius:10px; border:1px solid #e0e6ed; font-size:.8em; line-height:1.4; }
+  .mini h5 { margin:0 0 6px 0; color:#0056b3; font-size:.9em; }
+  .recap { background:#fff8e1; padding:18px 22px; border-left:6px solid #ffb300; border-radius:12px; }
+  .recap h4 { margin:0 0 10px 0; color:#ff8f00; }
+  .challenge { background:#e3f2fd; padding:18px 22px; border-left:6px solid #1976d2; border-radius:12px; }
+  .challenge h4 { margin:0 0 8px 0; color:#0d47a1; }
+  .pitfall { background:#ffebee; padding:16px 20px; border-left:6px solid #c62828; border-radius:12px; }
+  .pitfall h4 { margin:0 0 8px 0; color:#b71c1c; }
+  .tag { display:inline-block; background:#0056b3; color:#fff; padding:3px 8px; border-radius:6px; font-size:.55em; letter-spacing:.5px; margin-left:6px; }
+  .tag-easy { background:#43a047; }
+  .tag-med { background:#fb8c00; }
+  .tag-hard { background:#e53935; }
+  .highlight-inline { background:#fff59d; padding:2px 6px; border-radius:6px; }
+  pre { position:relative; }
+  .copy-btn { position:absolute; top:6px; right:6px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.3); font-size:11px; padding:4px 8px; border-radius:6px; cursor:pointer; opacity:0; transition:all .25s; backdrop-filter:blur(4px); }
+  pre:hover .copy-btn { opacity:1; }
+  .prompt { background:#eef7ff; border-left:4px solid #1976d2; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .question { background:#fff3e0; border-left:4px solid #fb8c00; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .mini-callout { font-size:.7em; color:#555; margin-top:8px; }
+  .extra { background:#ede7f6; border-left:4px solid #673ab7; padding:12px 16px; border-radius:10px; font-size:.8em; margin-top:16px; }
+  </style>
 </head>
+
 <body>
-    <h1>POO</h1>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Slide 1: Título -->
+      <section data-align="center" data-background-gradient="radial-gradient(#283b95, #17b2c3)">
+        <br><br><br><br>
+        <h4 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Programação Orientada a Objetos com Java
+        </h4>
+        <p style="color: white; font-size: .5em; font-weight: 300; margin-top: 10px;">
+          Prof. Msc. Nator Junior Carvalho da Costa
+        </p>
+        <h6 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Aula — Classes, Construtores, Arrays e Listas (sem pilares de POO)
+        </h6>
+        <h1>☕️📦</h1>
+      </section>
+
+      <!-- Slide: Objetivos -->
+      <section>
+        <h3>🎯 Objetivos da Aula</h3>
+        <div class="objectives">
+          <h4>Ao final você será capaz de:</h4>
+          <ul>
+            <li>Criar classes simples com atributos e construtor</li>
+            <li>Instanciar e manipular objetos em <code>Main</code></li>
+            <li>Armazenar objetos em <strong>arrays</strong></li>
+            <li>Iterar e aplicar lógica (soma, busca, filtro)</li>
+            <li>Evitar erros comuns: null, índice inválido, tipos crus</li>
+          </ul>
+        </div>
+        <div class="mini-grid">
+          <div class="mini"><h5>Ferramentas</h5>JDK 17+, GDB, VS Code, NetBeans ou IntelliJ</div>
+          <div class="mini"><h5>Foco</h5><strong>Base prática antes de herança/polimorfismo</strong></div>
+          <div class="mini"><h5>Mindset</h5>Modelar → Construir → Testar → Refatorar</div>
+        </div>
+      </section>
+
+      <!-- Slide: Mapa Mental -->
+      <section>
+        <h3>🧠 Mapa Mental</h3>
+        <div class="diagram">
+PROBLEMA REAL  →  MODELAGEM  →  CÓDIGO
+
+ Loja
+   Produto
+     nome:String
+     preco:double
+     +detalhes()
+
+ Objetos criados com new → manipulados em Main
+
+ Coleções
+   array[ ]  → tamanho fixo → rápido
+   ArrayList → tamanho dinâmico → flexível
+        </div>
+      </section>
+
+      <!-- Bloco 0: Para começar -->
+      <section data-align="center" data-background-gradient="radial-gradient(#1e3c72, #2a5298)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">🚀 Para Começar</h2>
+          <p style="color: #d1e8ff; font-size: 1.2em; margin-top: 10px;">
+            Vamos construir uma base prática de Java usando objetos, sem herança/polimorfismo.
+          </p>
+          <p class="muted" style="color:#e8f3ff">Stack sugerido: JDK 17+,  GDB, VS Code, NetBeans ou IntelliJ e terminal.</p>
+        </section>
+
+        <!-- 1. Classe básica -->
+        <section>
+          <h3 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">1. Criando uma Classe Básica</h3>
+          <p style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Exemplo com <span class="badge">Produto</span></p>
+        </section>
+
+        <!-- Slide 0: Framing do Problema -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema Inicial</h4>
+          <div class="prompt">Precisamos listar produtos (nome e preço) e realizar operações (imprimir e buscar).</div>
+          <div class="question">Opção ingênua: usar <code>String[] nomes</code> e <code>double[] precos</code>. Quais riscos?</div>
+          <ul style="color:white; font-size:.75em; margin-top:14px;">
+            <li class="fragment">Desalinhamento: índice 3 em um array não corresponde ao outro</li>
+            <li class="fragment">Evolução difícil (adicionar categoria exige novo array)</li>
+            <li class="fragment">Sem lugar para comportamento (ex: formatação)</li>
+          </ul>
+          <p style="color:white; font-size:.75em; margin-top:14px;" class="fragment">Solução: <strong>classe</strong> agrupa estado + operações.</p>
+        </section>
+
+        <!-- Slide 1: Esqueleto da Classe -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: Esqueleto da Classe</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Produto.java
+public class Produto {
+  String nome;
+  double preco;
+}
+</code></pre>
+          <div class="question">O que ainda não está garantido aqui?</div>
+          <ul style="color:white; font-size:.7em; margin-top:10px;">
+            <li class="fragment">Inicialização consistente</li>
+            <li class="fragment">Forma padrão de exibir dados</li>
+          </ul>
+        </section>
+
+        <!-- Slide 2: Teste sem Construtor -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 2: Uso sem Construtor (Fragilidade)</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Produto p = new Produto(); // campos com valores default
+    p.nome = "Notebook";
+    p.preco = 3500.00;
+    System.out.println(p.nome + " - R$ " + p.preco); // repetição + formatação dispersa
+  }
+}
+</code></pre>
+          <div class="question">Problemas?</div>
+          <ul style="color:white; font-size:.7em; margin-top:10px;">
+            <li class="fragment">Possibilidade de esquecer algum atributo</li>
+            <li class="fragment">Formatação duplicada em vários pontos</li>
+          </ul>
+        </section>
+
+        <!-- Slide 3: Construtor -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 3: Construtor</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Produto.java
+public class Produto {
+  String nome;
+  double preco;
+
+  // Construtor
+  public Produto(String nome, double preco) {
+    this.nome = nome;
+    this.preco = preco;
+  }
+}
+</code></pre>
+          <div class="prompt">Agora garantimos que todo objeto nasce completo.</div>
+          <div class="question">Por que não colocar lógica de impressão aqui?</div>
+          <ul style="color:white; font-size:.7em; margin-top:10px;">
+            <li class="fragment">Construtor: foco em montar estado</li>
+            <li class="fragment">Menos efeitos colaterais → testes previsíveis</li>
+          </ul>
+        </section>
+
+        <!-- Slide 4: Instanciando com Construtor -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 4: Instanciando com Construtor</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+public class Main {
+  public static void main(String[] args) {
+    Produto p = new Produto("Notebook", 3500.00);
+    System.out.println(p.nome + " - R$ " + p.preco); // ainda formatação manual
+  }
+}
+</code></pre>
+          <div class="fragment question">Ainda há algum ponto frágil aqui?</div>
+          <ul style="color:white; font-size:.7em; margin-top:10px;">
+            <li class="fragment">Formatação repetida fora da classe</li>
+            <li class="fragment">Se mudar o formato → alterar vários lugares</li>
+          </ul>
+          <div class="fragment prompt">Próximo passo: mover a responsabilidade de apresentação para a classe.</div>
+        </section>
+
+        <!-- Slide 5: Método de Apresentação -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 5: Método de Apresentação</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Produto.java
+public class Produto {
+  String nome;
+  double preco;
+
+  public Produto(String nome, double preco) {
+    this.nome = nome;
+    this.preco = preco;
+  }
+
+  String detalhes() {
+    return nome + " - R$ " + String.format("%.2f", preco);
+  }
+}
+</code></pre>
+          <div class="prompt">Centralizamos formatação → muda em um único ponto.</div>
+        </section>
+
+        <!-- Slide 6: Uso em Main -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 6: Uso no Main</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Produto p1 = new Produto("Notebook", 3500.00);
+    Produto p2 = new Produto("Mouse", 79.90);
+    System.out.println(p1.detalhes());
+    System.out.println(p2.detalhes());
+  }
+}
+</code></pre>
+          <div class="question">Onde está a lógica de apresentação agora?</div>
+        </section>
+
+        <!-- Slide 7: Evolução com Novo Campo -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 7: Evolução (categoria)</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Produto.java
+public class Produto {
+  String nome;
+  double preco;
+  String categoria; // NOVO
+
+  public Produto(String nome, double preco, String categoria) {
+    this.nome = nome;
+    this.preco = preco;
+    this.categoria = categoria;
+  }
+
+  String detalhes() {
+    return nome + " (" + categoria + ") - R$ " + String.format("%.2f", preco);
+  }
+}
+</code></pre>
+          <div class="prompt">Alterações mínimas: +campo, +parâmetro, ajustar método.</div>
+        </section>
+
+        <!-- Slide Extra: Main após Evolução -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Visão Atualizada no Main (após categoria)</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Produto p1 = new Produto("Notebook", 3500.00, "Computadores");
+    Produto p2 = new Produto("Mouse", 79.90, "Periféricos");
+    System.out.println(p1.detalhes());
+    System.out.println(p2.detalhes());
+  }
+}
+</code></pre>
+          <!-- <div class="question">O que teria mudado se já usássemos <code>toString()</code> em vez de <code>detalhes()</code>?</div> -->
+        </section>
+
+        <!-- Slide 8: Encapsulamento + toString (Profissional) -->
+        <!-- <section data-auto-animate>
+          <h4 style="color:white;">Passo 8: Encapsulamento + toString</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Produto.java (versão refinada)
+public class Produto {
+  private final String nome;
+  private double preco;
+  private final String categoria;
+
+  public Produto(String nome, double preco, String categoria) {
+    this.nome = nome;
+    this.preco = preco;
+    this.categoria = categoria;
+  }
+
+  public String getNome() { return nome; }
+  public double getPreco() { return preco; }
+  public String getCategoria() { return categoria; }
+  public void reajustar(double percentual) { this.preco *= (1 + percentual/100); }
+
+  @Override
+  public String toString() {
+    return nome + " (" + categoria + ") - R$ " + String.format("%.2f", preco);
+  }
+}
+</code></pre>
+          <div class="prompt">Encapsulamento protege e <code>toString()</code> integra com println automaticamente.</div>
+        </section> -->
+
+        </section>
+        <!-- <section>
+          <div class="recap">
+            <h4>⚡ Recap Produto</h4>
+            <ul>
+              <li>Problema → evitar arrays paralelas frágeis</li>
+              <li>Construtor garante criação consistente</li>
+              <li>Método / <code>toString()</code> centraliza apresentação</li>
+              <li>Evolução incremental: adicionar campo sem quebrar cliente</li>
+              <li>Encapsulamento protege invariantes (nome/categoria imutáveis)</li>
+            </ul>
+          </div>
+        </section> -->
+      </section>
+
+      <!-- 2. Arrays de Objetos -->
+      <section data-background-gradient="radial-gradient(#283b95, #17b2c3)">
+        <!-- Slide A1: Motivação + Visão Geral -->
+        <section data-auto-animate>
+          <h3 style="color:white;">2. Arrays (Essencial)</h3>
+          <div class="prompt">Coleção ordenada de elementos do MESMO tipo. Tamanho fixo.</div>
+          <div class="question" style="margin-top:12px;">Situação: guardar 5 notas — 5 variáveis ou 1 array?</div>
+          <ul style="color:white; font-size:.7em; margin-top:14px;">
+            <li class="fragment">Índices começam em 0</li>
+            <li class="fragment"><code>length</code> dá o tamanho</li>
+            <!-- <li class="fragment">Acesso constante: <code>array[i]</code></li> -->
+          </ul>
+        </section>
+        <!-- Slide A2: Primeiro exemplo (int[]) -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: Criar e Preencher</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+int[] notas = new int[5]; // 0..4
+</code></pre>
+        </section>
+        <!-- Slide A2: Primeiro exemplo (int[]) -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: Criar e Preencher</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+int[] notas = new int[5]; // 0..4
+notas[0] = 7;
+notas[1] = 8;
+notas[2] = 6;
+notas[3] = 9;
+notas[4] = 5;
+
+</code></pre>
+        </section>
+
+
+
+
+        <!-- Slide A2: Primeiro exemplo (int[]) -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: Criar e Preencher</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+int[] notas = new int[5]; // 0..4
+notas[0] = 7;
+notas[1] = 8;
+notas[2] = 6;
+notas[3] = 9;
+notas[4] = 5;
+
+for (int i = 0; i < notas.length; i++) { //Tradicional
+  System.out.println("Nota " + i + ": " + notas[i]);
+}
+</code></pre>
+        </section>
+
+        <!-- Slide A2: Primeiro exemplo (int[]) -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: Criar e Preencher</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+int[] notas = new int[5]; // 0..4
+notas[0] = 7;
+notas[1] = 8;
+notas[2] = 6;
+notas[3] = 9;
+notas[4] = 5;
+
+int soma = 0;
+for (int n : notas) { // leitura simples
+  soma += n;
+}
+</code></pre>
+        </section>
+        <!-- Slide A3: For-each e média -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 2: For-each + Média</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+int soma = 0;
+for (int n : notas) { // leitura simples
+  soma += n;
+}
+double media = (double) soma / notas.length;
+System.out.printf("Média: %.2f\n", media);
+</code></pre>
+          <div class="prompt">For-each: mais limpo quando não precisa de índice.</div>
+        </section>
+
+        <!-- Slide A4: Strings -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 3: Array de String</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Inicialização direta
+String[] cidades = { "Recife", "Natal", "Fortaleza" };
+for (int i = 0; i < cidades.length; i++) {
+  System.out.println(i + ": " + cidades[i]);
+}
+</code></pre>
+        </section>
+
+        <!-- Slide A5: Objetos -->
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 4: Array de Objetos</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+// Produto[] com 3 posições
+Produto[] estoque = new Produto[3];
+estoque[0] = new Produto("Teclado",120.0,"Periféricos");
+estoque[1] = new Produto("Monitor",899.0,"Display");
+estoque[2] = new Produto("Cabo HDMI",29.9,"Cabo");
+
+for (Produto p : estoque) {
+  System.out.println(p.detalhes());
+}
+</code></pre>
+        </section>
+
+        <!-- Slide A6: Operações e Desafio -->
+        <!-- <section data-auto-animate>
+          <h4 style="color:white;">Passo 5: Soma + Mais Caro</h4>
+<pre data-id="code-2"><code class="language-java" data-trim data-line-numbers>
+double total = 0.0; Produto top = estoque[0];
+for (Produto p : estoque) {
+  total += p.preco;
+  if (p.preco > top.preco) top = p;
+}
+System.out.printf("Total: R$ %.2f\n", total);
+System.out.println("Mais caro: " + top.detalhes());
+</code></pre>
+        </section> -->
+      </section>
+
+
+      <!-- 4. Exercício Guiado -->
+      <section data-background-gradient="radial-gradient(#283b95, #17b2c3)">
+        <section>
+          <h4 style="color: white;">3. Exercício Guiado</h4>
+          <div class="example-box">
+            <p style="color:white">Crie um mini cadastro de produtos no console:</p>
+            <ul style="color: white; font-size: 1.1em;">
+              <li class="fragment fade-right">Ler N produtos do usuário (nome e preço)</li>
+              <li class="fragment fade-right">Armazenar em um <strong>Produto[]</strong></li>
+              <li class="fragment fade-right">Listar todos e calcular soma de preços</li>
+            </ul>
+            <div class="prompt" style="color:#123; font-size:.85em; margin-top:10px;"><strong>Fazer em equipes de 3</strong></div>
+          </div>
+          <pre data-id="code-4a"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+import java.util.Scanner;
+public class Main {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.print("Nome: ");
+    String nome = sc.nextLine(); // lê linha completa
+    ...
+    sc.close(); // Fechar só no final
+  }
+}
+</code></pre>
+          <!-- <div class="prompt">Padrão: ler texto com <code>nextLine()</code>, converter se precisar número. (Equipe de 3!)</div> -->
+        
+        </section>
+
+        <section data-auto-animate>
+<pre data-id="code-4" style="height: 70vh;"><code class="language-java" data-trim data-line-numbers>
+import java.util.Scanner;
+
+public class CadastroProdutos {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.print("Quantos produtos deseja cadastrar? ");
+    int n = sc.nextInt();
+    sc.nextLine(); // consumir quebra de linha pendente
+
+    Produto[] itens = new Produto[n]; // array de tamanho fixo
+
+    for (int i = 0; i < n; i++) {
+      System.out.println("Produto #" + (i + 1));
+      System.out.print("Nome: ");
+      String nome = sc.nextLine();
+      System.out.print("Preço: ");
+      double preco = Double.parseDouble(sc.nextLine());
+      itens[i] = new Produto(nome, preco); // guarda na posição i
+    }
+
+    System.out.println("\nLista de produtos:");
+    double total = 0.0;
+    for (Produto p : itens) { // for-each para leitura
+      System.out.println("- " + p.detalhes());
+      total += p.preco;
+    }
+    System.out.printf("\nTotal: R$ %.2f\n", total);
+    sc.close();
+  }
+}
+</code></pre>
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Scripts Reveal.js -->
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      center: false,
+      controls: true,
+      progress: true,
+      slideNumber: true,
+      history: true,
+      transition: 'convex',
+      plugins: [RevealMarkdown, RevealHighlight, RevealMenu],
+      markdown: { smartypants: true },
+      width: 1200,
+      height: 800,
+      hash: true,
+      respondToHashChanges: true,
+      menu: { side: 'left', width: 300, numbers: true, titleSelector: 'h1, h2, h3, h4, h5, h6' }
+    });
+
+    // Botões de copiar código
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code').forEach(block => {
+        const pre = block.parentElement;
+        if(pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = 'Copiar';
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(block.innerText).then(() => {
+            const old = btn.textContent;
+            btn.textContent = 'Copiado!';
+            setTimeout(() => btn.textContent = old, 1500);
+          });
+        });
+        pre.appendChild(btn);
+      });
+    });
+  </script>
 </body>
 </html>
