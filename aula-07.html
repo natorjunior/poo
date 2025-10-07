@@ -618,6 +618,104 @@ Coordeno a área de Projetos.
 
       </section>
 
+      <section data-background-gradient="radial-gradient(#172a4a, #0b1736)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Classes abstratas em foco</h2>
+          <p style="color: #d1e8ff; font-size: 1.1em; margin-top: 12px;">
+            Quando a superclasse precisa definir um contrato, mas não deve ser instanciada diretamente.
+          </p>
+          <p class="muted" style="color:#e8f3ff">Combine com herança para guiar implementações e evitar objetos “genéricos”.</p>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Quando recorrer a uma classe abstrata?</h4>
+          <div class="mini-grid" style="margin-top:26px;">
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Contrato parcial</h5>
+              Você já tem atributos e alguns métodos comuns, mas quer forçar filhos a implementar partes críticas.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Evitar instâncias inválidas</h5>
+              Não faz sentido criar um colaborador “genérico” — somente especializações concretas devem existir.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Base para polimorfismo</h5>
+              Métodos abstratos garantem que o polimorfismo sempre encontre uma implementação nas subclasses.
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo enxuto: <code>Animal</code> define o contrato</h4>
+          <div class="prompt">Centralize apenas o que todos os animais compartilham e deixe o som específico para cada um.</div>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public abstract class Animal {
+  protected String nome;
+
+  public Animal(String nome) {
+    this.nome = nome;
+  }
+
+  public void apresentar() {
+    System.out.println("Olá, eu sou " + nome + ".");
+  }
+
+  public abstract void emitirSom();
+}
+</code></pre>
+          <div class="mini-callout">Classe abstrata = tem código pronto + métodos obrigatórios para os filhos.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Filhos obrigados a completar o comportamento</h4>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public class Cachorro extends Animal {
+  public Cachorro(String nome) {
+    super(nome);
+  }
+
+  @Override
+  public void emitirSom() {
+    System.out.println("Au au!");
+  }
+}
+
+public class Gato extends Animal {
+  public Gato(String nome) {
+    super(nome);
+  }
+
+  @Override
+  public void emitirSom() {
+    System.out.println("Miau!");
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Teste mínimo mostrando polimorfismo</h4>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public class Zoologico {
+  public static void main(String[] args) {
+    Animal[] animais = {
+      new Cachorro("Thor"),
+      new Gato("Luna")
+    };
+
+    for (Animal animal : animais) {
+      animal.apresentar();
+      animal.emitirSom();
+      System.out.println("---");
+    }
+  }
+}
+</code></pre>
+          <div class="mini-callout">A classe abstrata garante que todo animal tem <code>emitirSom()</code>, mas cada um escolhe como implementar.</div>
+        </section>
+      </section>
+
       <!-- Parte 2: Herança e Polimorfismo em Profundidade -->
       <!-- <section data-background-gradient="radial-gradient(#1e3c72, #2a5298)">
         <section>
