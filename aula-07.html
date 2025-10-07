@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula - Java: Herança e Polimorfismo</title>
+
+  <!-- Reveal.js -->
+  <link rel="stylesheet" href="./dist/reveal.css">
+  <link rel="stylesheet" href="./dist/theme/white.css" id="theme">
+  <!-- Tema para código -->
+  <link rel="stylesheet" href="./plugin/highlight/atom-one-dark.css">
+
+  <!-- Menu plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.css" rel="stylesheet">
+
+  <style>
+  .reveal h1, .reveal h2 { color: #0056b3; }
+  .reveal pre code { font-size: 1em; background: #222; border-radius: 8px; padding: 10px; }
+    .reveal p { font-size: 1.1em; }
+  .example-box { background: #f9fafb; border: 1px solid #d8dee6; padding: 20px; border-radius: 10px; margin: 10px; }
+  .card { background: #ffffff; border: 1px solid #d8dee6; padding: 20px; border-radius: 10px; margin: 15px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e9f2ff; color: #0056b3; font-weight: 600; font-size: .8em; }
+    .muted { color: #6c757d; font-size: .9em; }
+  /* Extra pedagogia */
+  .objectives { background:#f8f9fa; padding:24px 28px; border-left:6px solid #0056b3; border-radius:14px; }
+  .objectives h4 { margin-top:0; color:#0056b3; }
+  .objectives ul { margin:0; padding-left:20px; }
+  .objectives li { margin:8px 0; }
+  .diagram { font-family:'JetBrains Mono', monospace; background:#1e2933; color:#cfd8dc; padding:18px 22px; border-radius:12px; font-size:.72em; line-height:1.35; }
+  .mini-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:24px; }
+  .mini { background:#f8f9fa; padding:14px 16px; border-radius:10px; border:1px solid #e0e6ed; font-size:.8em; line-height:1.4; }
+  .mini h5 { margin:0 0 6px 0; color:#0056b3; font-size:.9em; }
+  .recap { background:#fffaf0; padding:18px 22px; border-left:6px solid #ffb300; border-radius:12px; }
+  .recap h4 { margin:0 0 10px 0; color:#ff8f00; }
+  .challenge { background:#f3f6fb; border:1px solid #c5d3e6; padding:18px 22px; border-radius:12px; }
+  .challenge h4 { margin:0 0 8px 0; color:#1f3c7a; }
+  .pitfall { background:#fcf5f5; border:1px solid #e9c9c9; padding:16px 20px; border-radius:12px; }
+  .pitfall h4 { margin:0 0 8px 0; color:#9e2a2b; }
+  .tag { display:inline-block; background:#0056b3; color:#fff; padding:3px 8px; border-radius:6px; font-size:.55em; letter-spacing:.5px; margin-left:6px; }
+  .tag-easy { background:#43a047; }
+  .tag-med { background:#fb8c00; }
+  .tag-hard { background:#e53935; }
+  .highlight-inline { background:#fff59d; padding:2px 6px; border-radius:6px; }
+  pre { position:relative; }
+  .copy-btn { position:absolute; top:6px; right:6px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.3); font-size:11px; padding:4px 8px; border-radius:6px; cursor:pointer; opacity:0; transition:all .25s; backdrop-filter:blur(4px); }
+  pre:hover .copy-btn { opacity:1; }
+  .prompt { background:#eef2f7; border-left:4px solid #1f3c7a; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .question { background:#fff5eb; border-left:4px solid #c77830; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .mini-callout { font-size:.7em; color:#555; margin-top:8px; }
+  .extra { background:#f5f2fb; border-left:4px solid #673ab7; padding:12px 16px; border-radius:10px; font-size:.8em; margin-top:16px; }
+  /* Mapa Mental Styles */
+  .mindmap-container { background:#061a2b; padding:20px; border-radius:10px; margin:20px 0; }
+  .mindmap-container svg { max-width:100%; height:auto; }
+  .output-box { background:#1a1a2e; border:2px solid #16213e; border-radius:8px; padding:15px; margin:10px 0; }
+  .output-box h5 { color:#4ade80; margin:0 0 10px 0; font-size:0.9em; }
+  .output-box code { color:#e2e8f0; background:none; }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section data-align="center" data-background-gradient="radial-gradient(#283b95, #17b2c3)">
+        <br><br><br><br>
+        <h4 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Programação Orientada a Objetos com Java
+        </h4>
+        <p style="color: white; font-size: .5em; font-weight: 300; margin-top: 10px;">
+          Prof. Me. Nator Junior Carvalho da Costa
+        </p>
+        <h6 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Aula 07 — Herança e Polimorfismo na prática
+        </h6>
+        <!-- <h3 style="color: white; font-weight: 700;">Herança e Polimorfismo</h3> -->
+      </section>
+
+
+      <!-- Parte 1 -->
+      <section data-align="center" data-background-gradient="radial-gradient(#1e3c72, #2a5298)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">🚀 Para começar</h2>
+          <p style="color: #d1e8ff; font-size: 1.2em; margin-top: 10px;">
+            Vamos criar uma hierarquia simples antes de explorar polimorfismo.
+          </p>
+          <p class="muted" style="color:#e8f3ff">Base prática: extrair código comum, construir filhos e especializar comportamentos.</p>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+          <h4 style="color:white;">Classe inicial</h4>
+
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+          <h4 style="color:white;">Atributos</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+</code></pre>
+        </section>
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+</code></pre>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+
+class Professor {
+  String nome;
+  int idade;
+  String disciplina;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e ensino " + disciplina);
+  }
+}
+</code></pre>
+        </section>
+
+
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers="4,6-8">
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+</code></pre>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers="4,6-8">
+
+class Professor {
+  String nome;
+  int idade;
+  String disciplina;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e ensino " + disciplina);
+  }
+}
+</code></pre>
+        </section>
+
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+          <div class="question">Temos pessoas com atributos iguais e comportamentos semelhantes em classes separadas.</div>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+
+class Professor {
+  String nome;
+  int idade;
+  String disciplina;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e ensino " + disciplina);
+  }
+}
+</code></pre>
+          <ul style="color:white; font-size:.75em; margin-top:14px;">
+            <li class="fragment">Atributos idênticos (<code>nome</code>, <code>idade</code>) repetidos</li>
+            <li class="fragment">Mesma lógica de apresentação espalhada</li>
+            <li class="fragment">Mudanças exigem alterar múltiplas classes</li>
+          </ul>
+          <!-- <div class="mini-callout">Cenário real: um portal acadêmico precisa exibir alunos e professores no mesmo painel. Se incluirmos mais funções (coordenador, monitor), a cópia cresce exponencialmente.</div> -->
+        </section>
+
+<!-- 
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema inicial: duplicação por falta de herança</h4>
+          <div class="question">Temos pessoas com atributos iguais e comportamentos semelhantes em classes separadas.</div>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+
+class Professor {
+  String nome;
+  int idade;
+  String disciplina;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e ensino " + disciplina);
+  }
+}
+</code></pre>
+          <ul style="color:white; font-size:.75em; margin-top:14px;">
+            <li class="fragment">Atributos idênticos (<code>nome</code>, <code>idade</code>) repetidos</li>
+            <li class="fragment">Mesma lógica de apresentação espalhada</li>
+            <li class="fragment">Mudanças exigem alterar múltiplas classes</li>
+          </ul>
+          <div class="mini-callout">Cenário real: um portal acadêmico precisa exibir alunos e professores no mesmo painel. Se incluirmos mais funções (coordenador, monitor), a cópia cresce exponencialmente.</div>
+        </section> -->
+<!-- 
+        <section data-auto-animate>
+          <h4 style="color:white;">Mapa da refatoração</h4>
+          <div class="prompt">Vamos evoluir o código em passos curtos, validando cada mudança antes de seguir.</div>
+          <div class="mini-grid" style="margin-top:20px;">
+            <div class="mini" style="background:#10243b; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">1. Generalizar</h5>
+              Consolidar atributos e comportamentos comuns em <code>Pessoa</code>.
+            </div>
+            <div class="mini" style="background:#10243b; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">2. Especializar</h5>
+              Adaptar subclasses para adicionar estado e lógica própria.
+            </div>
+            <div class="mini" style="background:#10243b; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">3. Validar</h5>
+              Testar o polimorfismo com variáveis do tipo <code>Pessoa</code> usando cada implementação.
+            </div>
+          </div>
+        </section> -->
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 1: extrair a superclasse (atributos)</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Pessoa.java
+public class Pessoa {
+  protected String nome;
+  protected int idade;
+}
+</code></pre>
+          <div class="prompt">Comece isolando o estado comum. O modificador <code>protected</code> permite que apenas as subclasses enxerguem os atributos.</div>
+          <div class="mini-callout">Validação rápida: nenhuma subclasse quebra, mas ainda não estamos reaproveitando nada.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 2: adicionar o construtor da superclasse</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Pessoa.java
+public class Pessoa {
+  protected String nome;
+  protected int idade;
+
+  public Pessoa(String nome, int idade) {
+    this.nome = nome;
+    this.idade = idade;
+  }
+}
+</code></pre>
+          <div class="prompt">O construtor garante que toda <code>Pessoa</code> nasça com dados consistentes.</div>
+          <!-- <div class="mini-callout">Se você não ajustar as subclasses, o compilador acusará ausência de um construtor padrão. Esse aviso é o gatilho para o próximo passo.</div> -->
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 3: extrair o método comum</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Pessoa.java
+public class Pessoa {
+  protected String nome;
+  protected int idade;
+
+  public Pessoa(String nome, int idade) {
+    this.nome = nome;
+    this.idade = idade;
+  }
+
+  public void apresentar() {
+    System.out.println("Olá, sou " + nome + " (" + idade + " anos)");
+  }
+}
+</code></pre>
+          <div class="prompt">Compartilhe o comportamento padrão. Depois as subclasses decidem se mantêm ou sobrescrevem.</div>
+          <!-- <div class="mini-callout">Sugestão: execute os testes do projeto (ou um <code>Main</code> simples) para garantir que a nova versão atende ao requisito original.</div> -->
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Checkpoint: como ficam as subclasses agora?</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Estudante.java (pré-refatoração)
+class Estudante {
+  String nome;
+  int idade;
+  String curso;
+
+  void apresentar() {
+    System.out.println("Sou " + nome + " e estudo " + curso);
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 4: montar a subclasse (estado extra)</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Estudante.java
+public class Estudante extends Pessoa {
+  private String curso;
+}
+</code></pre>
+          <div class="prompt">Adicione apenas o que diferencia a subclasse em relação à superclasse.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 5: construtor da subclasse com <code>super()</code></h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Estudante.java
+public class Estudante extends Pessoa {
+  private String curso;
+
+  public Estudante(String nome, int idade, String curso) {
+    super(nome, idade);
+    this.curso = curso;
+  }
+}
+</code></pre>
+          <div class="prompt">A primeira instrução do construtor deve delegar ao construtor da superclasse.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 6: sobrescrever o método na subclasse</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Estudante.java
+public class Estudante extends Pessoa {
+  private String curso;
+
+  public Estudante(String nome, int idade, String curso) {
+    super(nome, idade);
+    this.curso = curso;
+  }
+
+  @Override
+  public void apresentar() {
+    super.apresentar();
+    System.out.println("Estudo " + curso + ".");
+  }
+}
+</code></pre>
+          <div class="prompt">Use <code>@Override</code> para personalizar o comportamento mantendo a mesma assinatura e aproveite <code>super.apresentar()</code> quando quiser complementar a mensagem.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 7: repetir o processo para outra subclasse</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Professor.java
+public class Professor extends Pessoa {
+  private String disciplina;
+
+  public Professor(String nome, int idade, String disciplina) {
+    super(nome, idade);
+    this.disciplina = disciplina;
+  }
+
+  @Override
+  public void apresentar() {
+    super.apresentar();
+    System.out.println("Ensino " + disciplina + ".");
+  }
+}
+</code></pre>
+          <div class="prompt">A mesma sequência se aplica: novo estado, construtor delegando e método sobrescrito. Decida se chama <code>super</code> ou substitui tudo conforme a necessidade.</div>
+        </section>
+
+<section data-auto-animate>
+          <h4 style="color:white;">Passo 8: validar cada classe isoladamente</h4>
+          <div class="prompt">Antes de combinar tudo, garanta que cada subclasse entrega o comportamento esperado por conta própria.</div>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Estudante estudante = new Estudante("Ana", 20, "Engenharia");
+    Professor professor = new Professor("Carlos", 40, "Matemática");
+
+    estudante.apresentar();
+    professor.apresentar();
+  }
+}
+</code></pre>
+          <div class="mini-callout">Se algo imprimir errado, revise os atributos herdados ou o uso de <code>super.apresentar()</code> nas sobrescritas.</div>
+        </section>
+
+
+        
+<section data-auto-animate>
+  <h4 style="color:white;">Passo 9: perceber a repetição no código cliente</h4>
+  <div class="prompt">Enquanto tratamos cada tipo em coleções separadas, o código cresce e fica difícil de manter.</div>
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Relatorios.java
+public class Relatorios {
+  public void gerarResumo() {
+    List&lt;Estudante&gt; estudantes = List.of(
+      new Estudante("Ana", 20, "Engenharia"),
+      new Estudante("Bianca", 22, "Design")
+    );
+  }
+}
+  </code></pre>
+</section>
+
+<section data-auto-animate>
+  <h4 style="color:white;">Passo 9: perceber a repetição no código cliente</h4>
+  <div class="prompt">Enquanto tratamos cada tipo em coleções separadas, o código cresce e fica difícil de manter.</div>
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Relatorios.java
+public class Relatorios {
+  public void gerarResumo() {
+    List&lt;Estudante&gt; estudantes = List.of(
+      new Estudante("Ana", 20, "Engenharia"),
+      new Estudante("Bianca", 22, "Design")
+    );
+
+    for (Estudante e : estudantes) {
+      e.apresentar();
+    }
+  }
+}
+  </code></pre>
+</section>
+
+<section data-auto-animate>
+  <h4 style="color:white;">Passo 9: perceber a repetição no código cliente</h4>
+  <div class="prompt">Enquanto tratamos cada tipo em coleções separadas, o código cresce e fica difícil de manter.</div>
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Relatorios.java
+public class Relatorios {
+  public void gerarResumo() {
+    List&lt;Estudante&gt; estudantes = List.of(
+      new Estudante("Ana", 20, "Engenharia"),
+      new Estudante("Bianca", 22, "Design")
+    );
+
+    for (Estudante e : estudantes) {
+      e.apresentar();
+    }
+
+    List&lt;Professor&gt; professores = List.of(
+      new Professor("Carlos", 40, "Matemática"),
+      new Professor("Daniel", 38, "História")
+    );
+
+    for (Professor p : professores) {
+      p.apresentar();
+    }
+    // ... repetir para cada classe nova
+  }
+}
+  </code></pre>
+</section>
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Passo 10: explorar polimorfismo</h4>
+<pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Pessoa p1 = new Estudante("Ana", 20, "Engenharia");
+    Pessoa p2 = new Professor("Carlos", 40, "Matemática");
+
+    p1.apresentar();
+    p2.apresentar();
+  }
+}
+</code></pre>
+          <div class="output-box">
+            <h5>📤 Saída no Console:</h5>
+            <code>
+Olá, sou Ana (20 anos)<br>
+Estudo Engenharia.<br>
+Olá, sou Carlos (40 anos)<br>
+Ensino Matemática.
+            </code>
+          </div>
+          
+          <!-- <div class="prompt">Variáveis do tipo pai referenciam objetos do tipo filho. Observe como o trecho herdado roda via <code>super.apresentar()</code> antes da mensagem específica de cada classe.</div> -->
+        </section>
+
+
+<section data-auto-animate>
+  <!-- <h4 style="color:white;">Passo 9: uma coleção única com polimorfismo</h4> -->
+  <div class="prompt">Em vez de listas separadas, use uma lista de <code>Pessoa</code> e deixe o método sobrescrito fazer o trabalho.</div>
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Relatorios.java
+import java.util.List;
+
+public class Relatorios {
+  public void gerarResumo() {
+    List&lt;Pessoa&gt; pessoas = List.of(
+      new Estudante("Ana", 20, "Engenharia"),
+      new Professor("Carlos", 40, "Matemática")
+    );
+
+    for (Pessoa p : pessoas) {
+      p.apresentar(); // chama a versão específica de cada subclasse
+    }
+  }
+}
+  </code></pre>
+  <div class="output-box">
+    <h5>📤 Saída no Console:</h5>
+    <code>
+Olá, sou Ana (20 anos)<br>
+Estudo Engenharia.<br>
+Olá, sou Carlos (40 anos)<br>
+Ensino Matemática.
+    </code>
+  </div>
+  <div class="mini-callout">Menos código duplicado e cliente mais simples.</div>
+</section>
+
+<section data-auto-animate>
+  <!-- <h4 style="color:white;">Passo 11: estenda sem tocar no cliente (OCP)</h4> -->
+  <div class="prompt">Adicione uma nova subclasse e a iteração continua funcionando</div>
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Coordenador.java
+public class Coordenador extends Pessoa {
+  private String area;
+
+  public Coordenador(String nome, int idade, String area) {
+    super(nome, idade);
+    this.area = area;
+  }
+
+  @Override
+  public void apresentar() {
+    super.apresentar();
+    System.out.println("Coordeno a área de " + area + ".");
+  }
+}
+  </code></pre>
+
+  <pre data-id="code-1"><code class="language-java" data-trim data-line-numbers>
+// Relatorios.java (apenas adicionamos o novo objeto na lista)
+import java.util.List;
+
+public class Relatorios {
+  public void gerarResumo() {
+    List&lt;Pessoa&gt; pessoas = List.of(
+      new Estudante("Ana", 20, "Engenharia"),
+      new Professor("Carlos", 40, "Matemática"),
+      new Coordenador("Bianca", 35, "Projetos")
+    );
+
+    for (Pessoa p : pessoas) {
+      p.apresentar();
+    }
+  }
+}
+  </code></pre>
+
+  <div class="output-box">
+    <h5>📤 Saída no Console:</h5>
+    <code>
+Olá, sou Ana (20 anos)<br>
+Estudo Engenharia.<br>
+Olá, sou Carlos (40 anos)<br>
+Ensino Matemática.<br>
+Olá, sou Bianca (35 anos)<br>
+Coordeno a área de Projetos.
+    </code>
+  </div>
+  <div class="mini-callout">Princípio do Aberto/Fechado: “fechado para modificação, aberto para extensão”.</div>
+</section>
+
+
+      </section>
+
+      <section data-background-gradient="radial-gradient(#172a4a, #0b1736)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Classes abstratas em foco</h2>
+          <p style="color: #d1e8ff; font-size: 1.1em; margin-top: 12px;">
+            Quando a superclasse precisa definir um contrato, mas não deve ser instanciada diretamente.
+          </p>
+          <p class="muted" style="color:#e8f3ff">Combine com herança para guiar implementações e evitar objetos “genéricos”.</p>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Quando recorrer a uma classe abstrata?</h4>
+          <div class="mini-grid" style="margin-top:26px;">
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Contrato parcial</h5>
+              Você já tem atributos e alguns métodos comuns, mas quer forçar filhos a implementar partes críticas.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Evitar instâncias inválidas</h5>
+              Não faz sentido criar um colaborador “genérico” — somente especializações concretas devem existir.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Base para polimorfismo</h5>
+              Métodos abstratos garantem que o polimorfismo sempre encontre uma implementação nas subclasses.
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo enxuto: <code>Animal</code> define o contrato</h4>
+          <div class="prompt">Centralize apenas o que todos os animais compartilham e deixe o som específico para cada um.</div>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public abstract class Animal {
+  protected String nome;
+
+  public Animal(String nome) {
+    this.nome = nome;
+  }
+
+  public void apresentar() {
+    System.out.println("Olá, eu sou " + nome + ".");
+  }
+
+  public abstract void emitirSom();
+}
+</code></pre>
+          <div class="mini-callout">Classe abstrata = tem código pronto + métodos obrigatórios para os filhos.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Filhos obrigados a completar o comportamento</h4>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public class Cachorro extends Animal {
+  public Cachorro(String nome) {
+    super(nome);
+  }
+
+  @Override
+  public void emitirSom() {
+    System.out.println("Au au!");
+  }
+}
+
+public class Gato extends Animal {
+  public Gato(String nome) {
+    super(nome);
+  }
+
+  @Override
+  public void emitirSom() {
+    System.out.println("Miau!");
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Teste mínimo mostrando polimorfismo</h4>
+<pre data-id="code-abstrata"><code class="language-java" data-trim data-line-numbers>
+public class Zoologico {
+  public static void main(String[] args) {
+    Animal[] animais = {
+      new Cachorro("Thor"),
+      new Gato("Luna")
+    };
+
+    for (Animal animal : animais) {
+      animal.apresentar();
+      animal.emitirSom();
+      System.out.println("---");
+    }
+  }
+}
+</code></pre>
+          <div class="mini-callout">A classe abstrata garante que todo animal tem <code>emitirSom()</code>, mas cada um escolhe como implementar.</div>
+        </section>
+      </section>
+
+      <!-- Parte 2: Herança e Polimorfismo em Profundidade -->
+      <!-- <section data-background-gradient="radial-gradient(#1e3c72, #2a5298)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Herança e Polimorfismo com disciplina</h2>
+          <p style="color: #d1e8ff; font-size: 1.2em; margin-top: 10px;">
+            Transformando regras de negócio em uma hierarquia clara e testável
+          </p>
+          <p class="muted" style="color:#e8f3ff">Generalize primeiro, especialize depois, valide com polimorfismo.</p>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 4: extrair a classe base mínima</h3>
+          <div class="prompt">Centralize apenas o que todas as pessoas do domínio compartilham.</div>
+<pre data-id="code-3"><code class="language-java" data-trim data-line-numbers>
+// Funcionario.java
+public class Funcionario {
+  protected String nome;
+  protected double salarioBase;
+
+  public Funcionario(String nome, double salarioBase) {
+    this.nome = nome;
+    this.salarioBase = salarioBase;
+  }
+
+  public void trabalhar() {
+    System.out.println(nome + " está cumprindo atividades gerais.");
+  }
+}
+</code></pre>
+          <div class="mini-callout">Ainda não é abstrata: queremos validar que o núcleo comum faz sentido antes de limitar a classe.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 5: promover a superclasse a um contrato</h3>
+          <div class="prompt">Depois de validar o núcleo, declare o que toda subclasse deve fornecer.</div>
+<pre data-id="code-3"><code class="language-java" data-trim data-line-numbers>
+// Funcionario.java
+public abstract class Funcionario {
+  protected String nome;
+  protected double salarioBase;
+
+  public Funcionario(String nome, double salarioBase) {
+    this.nome = nome;
+    this.salarioBase = salarioBase;
+  }
+
+  public String resumo() {
+    return nome + " - Salário base: R$ " + String.format("%.2f", salarioBase);
+  }
+
+  public double calcularPagamento() {
+    return salarioBase;
+  }
+
+  public abstract void trabalhar();
+}
+</code></pre>
+          <div class="mini-callout">Tornar a classe abstrata garante que ninguém instancia um funcionário "genérico" no sistema.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 6: criar a primeira subclasse apenas com estado próprio</h3>
+          <div class="prompt">Antes de sobrescrever métodos, certifique-se de que o construtor reaproveita o que é comum.</div>
+<pre data-id="code-4"><code class="language-java" data-trim data-line-numbers>
+// Vendedor.java
+public class Vendedor extends Funcionario {
+  private double comissao;
+
+  public Vendedor(String nome, double salarioBase, double comissao) {
+    super(nome, salarioBase);
+    this.comissao = comissao;
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 7: sobrescrever comportamentos que mudam</h3>
+          <div class="prompt">Só depois de garantir o estado é que ajustamos o comportamento específico.</div>
+<pre data-id="code-4"><code class="language-java" data-trim data-line-numbers>
+// Vendedor.java
+public class Vendedor extends Funcionario {
+  private double comissao;
+
+  public Vendedor(String nome, double salarioBase, double comissao) {
+    super(nome, salarioBase);
+    this.comissao = comissao;
+  }
+
+  @Override
+  public double calcularPagamento() {
+    return salarioBase + comissao;
+  }
+
+  @Override
+  public void trabalhar() {
+    System.out.println(nome + " apresentou novos produtos a clientes.");
+  }
+}
+</code></pre>
+          <div class="mini-callout"><code>@Override</code> denuncia automaticamente erros de digitação na assinatura dos métodos.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 8: introduzir outra especialização incremental</h3>
+          <div class="prompt">Repita o processo: primeiro estado próprio, depois regras específicas.</div>
+<pre data-id="code-5"><code class="language-java" data-trim data-line-numbers>
+// Gerente.java
+public class Gerente extends Funcionario {
+  private String area;
+  private double bonusMensal;
+
+  public Gerente(String nome, double salarioBase, String area, double bonusMensal) {
+    super(nome, salarioBase);
+    this.area = area;
+    this.bonusMensal = bonusMensal;
+  }
+
+  @Override
+  public double calcularPagamento() {
+    return salarioBase + bonusMensal;
+  }
+
+  @Override
+  public void trabalhar() {
+    System.out.println(nome + " coordenou a área de " + area + ".");
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 9: montar o teste de polimorfismo</h3>
+          <div class="prompt">Coleções tipadas pela superclasse permitem variar o comportamento sem alterar o laço.</div>
+<pre data-id="code-6"><code class="language-java" data-trim data-line-numbers>
+// Main.java
+public class Main {
+  public static void main(String[] args) {
+    Funcionario[] equipe = {
+      new Vendedor("Ana", 3000.0, 650.0),
+      new Vendedor("Bruno", 2900.0, 480.0),
+      new Gerente("Carla", 7000.0, "Comercial", 1500.0)
+    };
+
+    for (Funcionario f : equipe) {
+      System.out.println(f.resumo());
+      f.trabalhar();
+      System.out.printf("Pagamento do mês: R$ %.2f%n", f.calcularPagamento());
+      System.out.println("---");
+    }
+  }
+}
+</code></pre>
+          <div class="mini-callout">Mesmo com o laço fixo, cada elemento executa a versão correta de <code>trabalhar()</code> e <code>calcularPagamento()</code>.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h3 style="color:white;">Passo 10: validar a modelagem</h3>
+          <div class="recap">
+            <h4>Checklist de herança responsável</h4>
+            <ul>
+              <li>Existe uma relação "é-um" clara para cada subclasse.</li>
+              <li>A superclasse concentra apenas o que todos os filhos compartilham.</li>
+              <li>Métodos sobrescritos têm <code>@Override</code> e usam <code>super</code> quando necessário.</li>
+              <li>Regras específicas ficam encapsuladas dentro das subclasses.</li>
+              <li>Há um teste rápido de polimorfismo garantindo o comportamento esperado.</li>
+            </ul>
+          </div>
+        </section>
+      </section> -->
+
+
+    </div>
+  </div>
+
+  <!-- Scripts Reveal.js -->
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      center: false,
+      controls: true,
+      progress: true,
+      slideNumber: true,
+      history: true,
+      transition: 'convex',
+      plugins: [RevealMarkdown, RevealHighlight, RevealMenu],
+      markdown: { smartypants: true },
+      width: 1200,
+      height: 800,
+      hash: true,
+      respondToHashChanges: true,
+      menu: { side: 'left', width: 300, numbers: true, titleSelector: 'h1, h2, h3, h4, h5, h6' }
+    });
+
+    // Botões de copiar código
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code').forEach(block => {
+        const pre = block.parentElement;
+        if(pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = 'Copiar';
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(block.innerText).then(() => {
+            const old = btn.textContent;
+            btn.textContent = 'Copiado!';
+            setTimeout(() => btn.textContent = old, 1500);
+          });
+        });
+        pre.appendChild(btn);
+      });
+    });
+  </script>
+</body>
+</html>
