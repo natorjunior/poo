@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula - Java: Threads, Listas e Coleções</title>
+
+  <!-- Reveal.js -->
+  <link rel="stylesheet" href="./dist/reveal.css">
+  <link rel="stylesheet" href="./dist/theme/white.css" id="theme">
+  <!-- Tema para código -->
+  <link rel="stylesheet" href="./plugin/highlight/atom-one-dark.css">
+
+  <!-- Menu plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.css" rel="stylesheet">
+
+  <style>
+  .reveal h1, .reveal h2 { color: #0056b3; }
+  .reveal pre code { font-size: 1em; background: #222; border-radius: 8px; padding: 10px; }
+    .reveal p { font-size: 1.1em; }
+  .example-box { background: #f9fafb; border: 1px solid #d8dee6; padding: 20px; border-radius: 10px; margin: 10px; }
+  .card { background: #ffffff; border: 1px solid #d8dee6; padding: 20px; border-radius: 10px; margin: 15px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e9f2ff; color: #0056b3; font-weight: 600; font-size: .8em; }
+    .muted { color: #6c757d; font-size: .9em; }
+  /* Extra pedagogia */
+  .objectives { background:#f8f9fa; padding:24px 28px; border-left:6px solid #0056b3; border-radius:14px; }
+  .objectives h4 { margin-top:0; color:#0056b3; }
+  .objectives ul { margin:0; padding-left:20px; }
+  .objectives li { margin:8px 0; }
+  .diagram { font-family:'JetBrains Mono', monospace; background:#1e2933; color:#cfd8dc; padding:18px 22px; border-radius:12px; font-size:.72em; line-height:1.35; }
+  .mini-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:24px; }
+  .mini { background:#f8f9fa; padding:14px 16px; border-radius:10px; border:1px solid #e0e6ed; font-size:.8em; line-height:1.4; }
+  .mini h5 { margin:0 0 6px 0; color:#0056b3; font-size:.9em; }
+  .recap { background:#fffaf0; padding:18px 22px; border-left:6px solid #ffb300; border-radius:12px; }
+  .recap h4 { margin:0 0 10px 0; color:#ff8f00; }
+  .challenge { background:#f3f6fb; border:1px solid #c5d3e6; padding:18px 22px; border-radius:12px; }
+  .challenge h4 { margin:0 0 8px 0; color:#1f3c7a; }
+  .pitfall { background:#fcf5f5; border:1px solid #e9c9c9; padding:16px 20px; border-radius:12px; }
+  .pitfall h4 { margin:0 0 8px 0; color:#9e2a2b; }
+  .tag { display:inline-block; background:#0056b3; color:#fff; padding:3px 8px; border-radius:6px; font-size:.55em; letter-spacing:.5px; margin-left:6px; }
+  .tag-easy { background:#43a047; }
+  .tag-med { background:#fb8c00; }
+  .tag-hard { background:#e53935; }
+  .highlight-inline { background:#fff59d; padding:2px 6px; border-radius:6px; }
+  pre { position:relative; }
+  .copy-btn { position:absolute; top:6px; right:6px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.3); font-size:11px; padding:4px 8px; border-radius:6px; cursor:pointer; opacity:0; transition:all .25s; backdrop-filter:blur(4px); }
+  pre:hover .copy-btn { opacity:1; }
+  .prompt { background:#eef2f7; border-left:4px solid #1f3c7a; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .question { background:#fff5eb; border-left:4px solid #c77830; padding:10px 14px; border-radius:8px; font-size:.85em; margin-top:14px; }
+  .mini-callout { font-size:.7em; color:#555; margin-top:8px; }
+  .extra { background:#f5f2fb; border-left:4px solid #673ab7; padding:12px 16px; border-radius:10px; font-size:.8em; margin-top:16px; }
+  /* Mapa Mental Styles */
+  .mindmap-container { background:#061a2b; padding:20px; border-radius:10px; margin:20px 0; }
+  .mindmap-container svg { max-width:100%; height:auto; }
+  .output-box { background:#1a1a2e; border:2px solid #16213e; border-radius:8px; padding:15px; margin:10px 0; }
+  .output-box h5 { color:#4ade80; margin:0 0 10px 0; font-size:0.9em; }
+  .output-box code { color:#e2e8f0; background:none; }
+  /* Ilustrações Threads */
+  .thread-visual { background:#0f1f35; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:18px 20px; margin-top:18px; color:#e2ecff; }
+  .thread-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:18px; }
+  .thread-box { background:#13294c; border:1px solid rgba(124,196,255,0.25); border-radius:10px; padding:16px; font-size:0.85em; line-height:1.45; position:relative; overflow:hidden; }
+  .thread-box h5 { margin:0 0 8px 0; color:#7cc4ff; font-size:0.95em; }
+  .thread-box::after { content:""; position:absolute; inset:0; border-radius:inherit; opacity:0; box-shadow:0 0 18px rgba(124,196,255,0.55); transition:opacity .25s; }
+  .thread-box:hover::after { opacity:1; }
+  .thread-timeline { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  .thread-track { background:#0b1a2e; border:1px solid rgba(124,196,255,0.2); border-radius:10px; padding:10px; display:flex; align-items:center; gap:10px; }
+  .thread-task { flex:1; height:32px; border-radius:6px; background:linear-gradient(90deg,#3b82f6 0%,#60a5fa 100%); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.78em; color:#fff; letter-spacing:.02em; }
+  .thread-task.short { flex:0.55; background:linear-gradient(90deg,#0ea5e9 0%,#2dd4bf 100%); }
+  .thread-task.wait { flex:0.35; background:linear-gradient(90deg,#f97316 0%,#fb923c 100%); }
+  .thread-label { font-size:0.78em; color:#aebcd6; text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; gap:8px; }
+  .thread-badge { display:inline-flex; align-items:center; justify-content:center; padding:4px 10px; border-radius:999px; font-size:0.68em; font-weight:600; letter-spacing:.08em; text-transform:uppercase; }
+  .thread-badge--primary { background:rgba(124,196,255,0.24); color:#7cc4ff; }
+  .thread-badge--secondary { background:rgba(45,212,191,0.18); color:#2dd4bf; }
+  .thread-badge--timeline { background:rgba(148,163,184,0.22); color:#e2e8f0; }
+  .thread-badge--alert { background:rgba(239,68,68,0.18); color:#fca5a5; }
+  .thread-badge--success { background:rgba(34,197,94,0.18); color:#86efac; }
+  .thread-badge--lock { background:rgba(52,211,153,0.2); color:#6ee7b7; }
+  .thread-highlight { color:#7cc4ff; font-weight:600; }
+  .thread-warning { background:#3d0909; border:1px solid #ff5f5f; color:#ffbdbd; }
+  .thread-success { background:#052d18; border:1px solid #34d399; color:#b5f5d4; }
+  .thread-lock { display:flex; align-items:flex-start; gap:12px; background:#0b1f33; border:1px solid rgba(52,211,153,0.35); border-radius:10px; padding:14px 18px; margin-top:16px; font-size:0.85em; }
+  .thread-states { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; margin-top:12px; }
+  .thread-state { min-width:120px; background:#13294c; border:1px solid rgba(124,196,255,0.35); border-radius:10px; padding:14px 16px; text-align:center; font-size:0.8em; color:#cbd5e1; }
+  .thread-state.active { background:#3b82f6; color:#fff; box-shadow:0 0 18px rgba(59,130,246,0.55); }
+  .thread-arrow { font-size:1.6em; color:#7cc4ff; }
+  .thread-race { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin:18px 0; }
+  .thread-race-box { padding:16px; border-radius:12px; font-size:0.8em; line-height:1.6; position:relative; overflow:hidden; }
+  .thread-race-box strong { display:block; margin-bottom:8px; }
+  .thread-race-box::before { content:""; position:absolute; inset:0; border-radius:inherit; opacity:0.25; }
+  .thread-race-box.bad::before { background:radial-gradient(circle at top,#ff5f5f55,#3d0909); }
+  .thread-race-box.good::before { background:radial-gradient(circle at top,#34d39955,#052d18); }
+  .thread-race-box ul { margin:0; padding-left:18px; }
+  .thread-race-box li { margin-bottom:4px; }
+  .thread-join { margin-top:16px; background:#0f1f35; border:1px solid rgba(124,196,255,0.3); border-radius:12px; padding:16px 20px; font-size:0.85em; color:#cbd5e1; }
+  .thread-join-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:12px; }
+  .thread-join-step { background:#13294c; border:1px solid rgba(124,196,255,0.2); border-radius:10px; padding:14px 16px; }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title -->
+      <section data-align="center" data-background-gradient="radial-gradient(#283b95, #17b2c3)">
+        <br><br><br><br>
+        <h4 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Programação Orientada a Objetos com Java
+        </h4>
+        <p style="color: white; font-size: .5em; font-weight: 300; margin-top: 10px;">
+          Prof. Me. Nator Junior Carvalho da Costa
+        </p>
+        <h6 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+          Aula 08 — Threads, Listas e Coleções
+        </h6>
+      </section>
+
+
+      <!-- Parte 1: Listas e Coleções -->
+      <section data-align="center" data-background-gradient="radial-gradient(#1e3c72, #2a5298)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Listas e Coleções</h2>
+          <p style="color: #d1e8ff; font-size: 1.2em; margin-top: 10px;">
+            Armazenar e processar múltiplos dados de forma eficiente
+          </p>
+          <p class="muted" style="color:#e8f3ff">ArrayList, LinkedList, HashSet, HashMap</p>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">O problema: Arrays fixos</h4>
+          <div class="prompt">Quando você precisa de muitos dados, arrays não crescem.</div>
+<pre data-id="code-col-prob"><code class="language-java" data-trim data-line-numbers>
+String[] nomes = new String[3]; // Fixo: apenas 3 elementos
+nomes[0] = "Ana";
+nomes[1] = "Bruno";
+nomes[2] = "Carla";
+
+// nomes[3] = "Diana"; // ❌ ArrayIndexOutOfBoundsException!
+</code></pre>
+          <div class="mini-callout">O array não pode crescer. Você precisa criar um novo array, maior.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">A solução: Coleções dinâmicas</h4>
+          <div class="prompt">Coleções crescem automaticamente conforme você adiciona elementos.</div>
+<pre data-id="code-col-prob"><code class="language-java" data-trim data-line-numbers>
+import java.util.*;
+
+List&lt;String&gt; nomes = new ArrayList<>(); // Cresce automaticamente
+nomes.add("Ana");
+nomes.add("Bruno");
+nomes.add("Carla");
+nomes.add("Diana");
+
+System.out.println(nomes.size()); // 4 ✅
+</code></pre>
+          <div class="mini-callout">Sem especificar tamanho. Cresce conforme necessário.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Por que coleções?</h4>
+          <div class="mini-grid" style="margin-top:26px;">
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Crescimento dinâmico</h5>
+              Adicione elementos sem se preocupar com limite.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Operações eficientes</h5>
+              Busca, inserção, remoção otimizadas por tipo.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">Interface consistente</h5>
+              List, Set, Map — padrões previsíveis.
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">ArrayList: Começando simples</h4>
+          <div class="prompt">Criar uma lista vazia e adicionar elementos.</div>
+<pre data-id="code-arraylist-1"><code class="language-java" data-trim data-line-numbers>
+import java.util.ArrayList;
+import java.util.List;
+
+List&lt;String&gt; frutas = new ArrayList<>();
+
+frutas.add("Maçã");
+frutas.add("Banana");
+frutas.add("Laranja");
+
+System.out.println(frutas);
+// Saída: [Maçã, Banana, Laranja]
+</code></pre>
+          <div class="mini-callout">Tipo genérico <code>&lt;String&gt;</code> define o que a lista armazena.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">ArrayList: Acessando elementos</h4>
+          <div class="prompt">Recupere elementos pela posição ou tamanho.</div>
+<pre data-id="code-arraylist-1"><code class="language-java" data-trim data-line-numbers>
+List&lt;String&gt; frutas = new ArrayList<>();
+frutas.add("Maçã");
+frutas.add("Banana");
+frutas.add("Laranja");
+
+System.out.println(frutas.get(0));  // Maçã
+System.out.println(frutas.get(1));  // Banana
+System.out.println(frutas.size());  // 3
+System.out.println(frutas.contains("Banana")); // true
+</code></pre>
+          <div class="mini-callout">Posição começa em 0. Acesso é muito rápido O(1).</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">ArrayList: Iteração</h4>
+          <div class="prompt">Percorrer todos os elementos com for-each.</div>
+<pre data-id="code-arraylist-1"><code class="language-java" data-trim data-line-numbers>
+List&lt;String&gt; frutas = new ArrayList<>();
+frutas.add("Maçã");
+frutas.add("Banana");
+frutas.add("Laranja");
+
+// Modo 1: for-each
+for (String fruta : frutas) {
+  System.out.println(fruta);
+}
+
+// Modo 2: for tradicional
+for (int i = 0; i < frutas.size(); i++) {
+  System.out.println(frutas.get(i));
+}
+</code></pre>
+          <div class="mini-callout">For-each é mais legível. For tradicional permite acessar índice.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">ArrayList: Remover e substituir</h4>
+          <div class="prompt">Modifique o conteúdo da lista.</div>
+<pre data-id="code-arraylist-1"><code class="language-java" data-trim data-line-numbers>
+List&lt;String&gt; frutas = new ArrayList<>();
+frutas.add("Maçã");
+frutas.add("Banana");
+frutas.add("Laranja");
+
+frutas.set(1, "Melancia"); // Substitui Banana por Melancia
+System.out.println(frutas);
+// [Maçã, Melancia, Laranja]
+
+frutas.remove(0); // Remove Maçã (índice 0)
+System.out.println(frutas);
+// [Melancia, Laranja]
+</code></pre>
+          <div class="mini-callout"><code>set()</code> substitui, <code>remove()</code> deleta.</div>
+        </section>
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">LinkedList: Inserção no meio</h4>
+          <div class="prompt">Insira elementos em qualquer posição, não apenas no final.</div>
+<pre data-id="code-linkedlist-1"><code class="language-java" data-trim data-line-numbers>
+import java.util.LinkedList;
+import java.util.List;
+
+List&lt;Integer&gt; numeros = new LinkedList<>();
+numeros.add(10);
+numeros.add(20);
+numeros.add(30);
+
+System.out.println(numeros);
+// [10, 20, 30]
+
+numeros.add(1, 15); // Insere 15 na posição 1
+System.out.println(numeros);
+// [10, 15, 20, 30]
+</code></pre>
+          <div class="mini-callout">Inserção no meio é muito mais rápida em LinkedList que em ArrayList.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">LinkedList: Remoção por valor</h4>
+          <div class="prompt">Remova removendo pelo valor, não pela posição.</div>
+<pre data-id="code-linkedlist-1"><code class="language-java" data-trim data-line-numbers>
+List&lt;Integer&gt; numeros = new LinkedList<>();
+numeros.add(10);
+numeros.add(15);
+numeros.add(20);
+numeros.add(30);
+
+System.out.println(numeros);
+// [10, 15, 20, 30]
+
+numeros.remove(Integer.valueOf(15)); // Remove o valor 15
+System.out.println(numeros);
+// [10, 20, 30]
+
+boolean removeu = numeros.remove(Integer.valueOf(100)); // Valor não existe
+System.out.println(removeu); // false
+</code></pre>
+          <div class="mini-callout"><code>remove(value)</code> é diferente de <code>remove(index)</code>.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashSet: O problema de duplicatas</h4>
+          <div class="prompt">Você quer garantir que não haja valores repetidos.</div>
+<pre data-id="code-set-1"><code class="language-java" data-trim data-line-numbers>
+import java.util.*;
+
+List&lt;String&gt; linguagens = new ArrayList<>();
+linguagens.add("Java");
+linguagens.add("Python");
+linguagens.add("Java");  // Duplicata!
+linguagens.add("Go");
+
+System.out.println(linguagens.size()); // 4
+System.out.println(linguagens);
+// [Java, Python, Java, Go]  ← Tem Java duas vezes
+</code></pre>
+          <div class="mini-callout">ArrayList permite duplicatas. Você precisa verificar manualmente ou usar Set.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashSet: Automático, sem duplicatas</h4>
+          <div class="prompt">Adicione valores; duplicatas são ignoradas.</div>
+<pre data-id="code-set-1"><code class="language-java" data-trim data-line-numbers>
+import java.util.HashSet;
+import java.util.Set;
+
+Set&lt;String&gt; linguagens = new HashSet<>();
+linguagens.add("Java");
+linguagens.add("Python");
+linguagens.add("Java");  // Ignorado, pois já existe
+linguagens.add("Go");
+
+System.out.println(linguagens.size()); // 3
+System.out.println(linguagens);
+// [Python, Go, Java]  ← Sem duplicatas, ordem arbitrária
+</code></pre>
+          <div class="mini-callout">HashSet automaticamente descarta duplicatas. Ordem não é garantida.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashSet: Busca de pertencimento</h4>
+          <div class="prompt">Verifique se um elemento está no conjunto.</div>
+<pre data-id="code-set-1"><code class="language-java" data-trim data-line-numbers>
+Set&lt;String&gt; linguagens = new HashSet<>();
+linguagens.add("Java");
+linguagens.add("Python");
+linguagens.add("Go");
+
+// Verificar se existe
+System.out.println(linguagens.contains("Java"));   // true
+System.out.println(linguagens.contains("C++"));    // false
+
+// Remover um elemento
+linguagens.remove("Python");
+System.out.println(linguagens.size()); // 2
+System.out.println(linguagens.contains("Python")); // false
+</code></pre>
+          <div class="mini-callout"><code>contains()</code> é muito rápido em HashSet (O(1)).</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashMap: Mapeando chave-valor</h4>
+          <div class="prompt">Armazene dados associados: chave → valor</div>
+<pre data-id="code-map-1"><code class="language-java" data-trim data-line-numbers>
+import java.util.HashMap;
+import java.util.Map;
+
+Map&lt;String, Integer&gt; notas = new HashMap<>();
+
+notas.put("Ana", 95);
+notas.put("Bruno", 87);
+notas.put("Carla", 92);
+
+System.out.println(notas);
+// {Ana=95, Bruno=87, Carla=92}
+
+System.out.println(notas.get("Ana")); // 95
+System.out.println(notas.get("Diana")); // null (não existe)
+</code></pre>
+          <div class="mini-callout">Chaves devem ser únicas. Valores podem repetir.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashMap: Operações comuns</h4>
+          <div class="prompt">Adicione, busque, remova e verifique.</div>
+<pre data-id="code-map-1"><code class="language-java" data-trim data-line-numbers>
+Map&lt;String, Integer&gt; notas = new HashMap<>();
+notas.put("Ana", 95);
+notas.put("Bruno", 87);
+notas.put("Carla", 92);
+
+// Verificar se chave existe
+System.out.println(notas.containsKey("Ana"));    // true
+System.out.println(notas.containsKey("Diana"));  // false
+
+// Verificar se valor existe
+System.out.println(notas.containsValue(95));     // true
+System.out.println(notas.containsValue(100));    // false
+
+// Tamanho do mapa
+System.out.println(notas.size()); // 3
+</code></pre>
+          <div class="mini-callout"><code>containsKey()</code> é muito mais rápido que <code>containsValue()</code>.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashMap: Atualizando valores</h4>
+          <div class="prompt">Modifique valores e remova pares.</div>
+<pre data-id="code-map-1"><code class="language-java" data-trim data-line-numbers>
+Map&lt;String, Integer&gt; notas = new HashMap<>();
+notas.put("Ana", 95);
+notas.put("Bruno", 87);
+notas.put("Carla", 92);
+
+// Atualizar uma nota
+notas.put("Ana", 98); // Substitui o 95 por 98
+System.out.println(notas.get("Ana")); // 98
+
+// Remover um par
+notas.remove("Bruno");
+System.out.println(notas.size()); // 2
+
+// Obter com padrão se não existe
+Integer notaDiana = notas.getOrDefault("Diana", 0);
+System.out.println(notaDiana); // 0
+</code></pre>
+          <div class="mini-callout"><code>getOrDefault()</code> evita NullPointerException.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">HashMap: Iteração</h4>
+          <div class="prompt">Percorra chaves, valores ou pares.</div>
+<pre data-id="code-map-1"><code class="language-java" data-trim data-line-numbers>
+Map&lt;String, Integer&gt; notas = new HashMap<>();
+notas.put("Ana", 95);
+notas.put("Bruno", 87);
+notas.put("Carla", 92);
+
+// Iterar pares (chave-valor)
+for (String nome : notas.keySet()) {
+  System.out.println(nome + ": " + notas.get(nome));
+}
+
+// Ou usando entrySet (mais eficiente)
+for (Map.Entry&lt;String, Integer&gt; entry : notas.entrySet()) {
+  System.out.println(entry.getKey() + " → " + entry.getValue());
+}
+</code></pre>
+          <div class="mini-callout"><code>entrySet()</code> é mais rápido que <code>keySet()</code>.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Comparação: qual coleção usar?</h4>
+          <div class="mini-grid" style="margin-top:20px;">
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">ArrayList</h5>
+              Acesso por índice rápido. Inserir/remover no meio → lento.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">LinkedList</h5>
+              Inserir/remover rápido. Acesso por índice → lento.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">HashSet</h5>
+              Sem duplicatas. Sem ordem. Busca muito rápida.
+            </div>
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(255,255,255,0.12);">
+              <h5 style="color:#7cc4ff;">HashMap</h5>
+              Chave-valor. Sem ordem. Busca muito rápida.
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Cenário 1: Lista de alunos</h4>
+          <div class="prompt">Use ArrayList quando você acessa por índice frequentemente.</div>
+<pre data-id="code-cenarios"><code class="language-java" data-trim data-line-numbers>
+List&lt;String&gt; alunos = new ArrayList<>();
+alunos.add("Ana");
+alunos.add("Bruno");
+alunos.add("Carla");
+
+// Ler de cima para baixo
+for (int i = 0; i < alunos.size(); i++) {
+  System.out.println((i + 1) + ". " + alunos.get(i));
+}
+
+// Saída:
+// 1. Ana
+// 2. Bruno
+// 3. Carla
+</code></pre>
+          <div class="mini-callout">ArrayList é ideal para listas ordenadas com acesso por posição.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Cenário 2: Remover em lote</h4>
+          <div class="prompt">Use LinkedList quando precisa inserir/remover frequentemente.</div>
+<pre data-id="code-cenarios"><code class="language-java" data-trim data-line-numbers>
+List&lt;Integer&gt; fila = new LinkedList<>();
+fila.add(1);
+fila.add(2);
+fila.add(3);
+fila.add(4);
+
+// Operações de fila: remover do início, adicionar no fim
+fila.remove(0);      // Remove primeiro
+fila.add(5);         // Adiciona último
+
+System.out.println(fila); // [2, 3, 4, 5]
+</code></pre>
+          <div class="mini-callout">LinkedList é ideal para filas e operações de pilha.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Cenário 3: Garantir unicidade</h4>
+          <div class="prompt">Use HashSet quando não pode ter duplicatas.</div>
+<pre data-id="code-cenarios"><code class="language-java" data-trim data-line-numbers>
+Set&lt;String&gt; emails = new HashSet<>();
+emails.add("user@example.com");
+emails.add("admin@example.com");
+emails.add("user@example.com");  // Ignorado
+
+System.out.println(emails.size()); // 2
+
+// Verificar rapidamente
+if (emails.contains("user@example.com")) {
+  System.out.println("Email já registrado");
+}
+</code></pre>
+          <div class="mini-callout">HashSet é ideal para validação de unicidade e rápida busca.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Cenário 4: Associação rápida</h4>
+          <div class="prompt">Use HashMap quando precisa de chave → valor.</div>
+<pre data-id="code-cenarios"><code class="language-java" data-trim data-line-numbers>
+Map&lt;String, String&gt; config = new HashMap<>();
+config.put("host", "localhost");
+config.put("port", "8080");
+config.put("db", "myapp");
+
+// Lookup rápido
+String host = config.get("host"); // "localhost"
+
+// Inicializar com padrão
+String timeout = config.getOrDefault("timeout", "30");
+System.out.println(timeout); // "30"
+</code></pre>
+          <div class="mini-callout">HashMap é ideal para dicionários, configurações e caches.</div>
+        </section>
+
+      </section>
+
+      <!-- Sessão dedicada: Coleções, Exceções e Threads -->
+      <section data-background-gradient="radial-gradient(#06121f, #102a43)">
+        <section data-auto-animate>
+          <h4 style="color:white;">Exceções em Java</h4>
+          <div class="mini-grid" style="margin-top:18px;">
+            <div class="mini" style="background:#0f1f35; color:#e2ecff; border:1px solid rgba(124,196,255,0.18);">
+              <h5 style="color:#7cc4ff;">Definição</h5>
+              <ul style="margin:0; padding-left:18px;">
+                <li>Erro em tempo de execução</li>
+                <li>Dispara um objeto <code>Exception</code></li>
+              </ul>
+            </div>
+            
+          </div>
+        </section>
+
+        
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Como elas propagam</h4>
+<pre data-id="code-exception-flow"><code class="language-java" data-trim data-line-numbers>
+void carregar() throws IOException {
+  Files.readString(Path.of("dados.txt"));
+}
+
+void executar() {
+  try {
+    carregar();
+  } catch (IOException e) {
+    System.err.println("Falha de leitura");
+  }
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo 1: arquivo ausente</h4>
+<pre data-id="code-exception-checked"><code class="language-java" data-trim data-line-numbers>
+try {
+  Files.readAllLines(Path.of("lista.txt"));
+  System.out.println("Arquivo lido");
+} catch (IOException e) {
+  System.out.println("Arquivo não encontrado");
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo 2: divisão por zero</h4>
+<pre data-id="code-exception-unchecked"><code class="language-java" data-trim data-line-numbers>
+try {
+  int resultado = 10 / 0;
+  System.out.println(resultado);
+} catch (ArithmeticException e) {
+  System.out.println("Não divida por zero");
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo 3: objeto nulo</h4>
+<pre data-id="code-exception-null"><code class="language-java" data-trim data-line-numbers>
+String nome = null;
+
+try {
+  System.out.println(nome.length());
+} catch (NullPointerException e) {
+  System.out.println("Objeto sem valor");
+}
+</code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo 4: acesso ao banco</h4>
+<pre data-id="code-exception-sql"><code class="language-java" data-trim data-line-numbers>
+try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/escola", "user", "senha")) {
+  System.out.println("Conectado");
+} catch (SQLException e) {
+  System.out.println("Falha ao conectar");
+}
+</code></pre>
+          <div class="mini-callout">Necessita <code>java.sql.*</code> na prática; foco aqui é o tratamento.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Exemplo 5: índice inválido</h4>
+<pre data-id="code-exception-index"><code class="language-java" data-trim data-line-numbers>
+int[] notas = {8, 9};
+
+try {
+  System.out.println(notas[2]);
+} catch (ArrayIndexOutOfBoundsException e) {
+  System.out.println("Posição inexistente");
+}
+</code></pre>
+        </section>
+
+        
+      </section>
+
+
+      <!-- Parte 2: Threads -->
+      <section data-background-gradient="radial-gradient(#172a4a, #0b1736)">
+        <section>
+          <br><br><br><br>
+          <h2 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Threads e Concorrência</h2>
+          <p style="color: #d1e8ff; font-size: 1.1em; margin-top: 12px;">
+            Executar múltiplas tarefas simultaneamente no mesmo programa
+          </p>
+          <p class="muted" style="color:#e8f3ff">Sincronização, race conditions e estados de thread</p>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">O que é uma thread?</h4>
+          <div class="prompt">Uma thread é um fluxo de execução independente que permite paralelizar tarefas dentro do mesmo processo.</div>
+        </section>
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema: Execução sequencial</h4>
+          <div class="prompt">Sem threads, tarefas executam uma após a outra (lento).</div>
+          <div class="thread-visual" style="margin-top:16px;">
+            <div class="thread-label"><span class="thread-badge thread-badge--timeline">Linha do tempo</span>Thread principal</div>
+            <div class="thread-track" style="margin-top:6px;">
+              <div class="thread-task" style="flex:0.65;">Ler arquivo (2s)</div>
+              <div class="thread-task short" style="flex:0.35;">Processar (1s)</div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema: Execução sequencial</h4>
+          <div class="prompt">Sem threads, tarefas executam uma após a outra (lento).</div>
+          <div class="thread-visual" style="margin-top:16px;">
+            <div class="thread-label"><span class="thread-badge thread-badge--timeline">Linha do tempo</span>Thread principal</div>
+            <div class="thread-track" style="margin-top:6px;">
+              <div class="thread-task" style="flex:0.65;">Ler arquivo (2s)</div>
+              <div class="thread-task short" style="flex:0.35;">Processar (1s)</div>
+            </div>
+            <p style="margin-top:12px; font-size:0.82em; color:#cbd5e1;">A thread principal precisa terminar a tarefa 1 para começar a tarefa 2. Tempo total = <span class="thread-highlight">2s + 1s = 3s</span>.</p>
+          </div>
+<pre data-id="code-thread-prob"><code class="language-java" data-trim data-line-numbers>
+public class Tarefa1 {
+  public static void main(String[] args) {
+    System.out.println("Iniciando...");
+    
+    // Tarefa 1: lê arquivo (2 segundos)
+    System.out.println("Lendo arquivo...");
+    Thread.sleep(2000);
+    
+    // Tarefa 2: processa dados (1 segundo)
+    System.out.println("Processando...");
+    Thread.sleep(1000);
+    
+    System.out.println("Concluído");
+    // Total: 3 segundos (espera uma terminar para iniciar outra)
+  }
+}
+</code></pre>
+          <div class="mini-callout">Tempo total: 3 segundos (sequencial)</div>
+        </section>
+
+
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Problema: Execução sequencial</h4>
+
+<pre data-id="code-thread-prob"><code class="language-java" data-trim data-line-numbers>
+public class Tarefa1 {
+  public static void main(String[] args) {
+    System.out.println("Iniciando...");
+    
+    // Tarefa 1: lê arquivo (2 segundos)
+    System.out.println("Lendo arquivo...");
+    Thread.sleep(2000);
+    
+    // Tarefa 2: processa dados (1 segundo)
+    System.out.println("Processando...");
+    Thread.sleep(1000);
+    
+    System.out.println("Concluído");
+    // Total: 3 segundos (espera uma terminar para iniciar outra)
+  }
+}
+</code></pre>
+          <div class="mini-callout">Tempo total: 3 segundos (sequencial)</div>
+        </section>
+
+
+
+
+<!-- 
+        <section data-auto-animate>
+          <h4 style="color:white;">O que é uma thread?</h4>
+
+          <div class="thread-visual">
+            <div class="thread-grid">
+              <div class="thread-box">
+                <h5>Execução sequencial</h5>
+                <div class="thread-timeline">
+                  <div class="thread-label"><span class="thread-badge thread-badge--primary">Thread única</span>Fila única de tarefas</div>
+                  <div class="thread-track">
+                    <div class="thread-task">Tarefa 1</div>
+                    <div class="thread-task short">Tarefa 2</div>
+                  </div>
+                </div>
+                <p style="margin-top:10px;">Processador executa uma tarefa de cada vez ➜ tempo total = soma de todas.</p>
+              </div>
+
+              <div class="thread-box">
+                <h5>Execução com múltiplas threads</h5>
+                <div class="thread-timeline" style="gap:12px;">
+                  <div class="thread-label"><span class="thread-badge thread-badge--primary">Thread A</span>Fila dedicada</div>
+                  <div class="thread-track">
+                    <div class="thread-task">Tarefa 1</div>
+                  </div>
+                  <div class="thread-label"><span class="thread-badge thread-badge--secondary">Thread B</span>Fila dedicada</div>
+                  <div class="thread-track">
+                    <div class="thread-task short">Tarefa 2</div>
+                  </div>
+                </div>
+                <p style="margin-top:10px;">Cada thread tem sua própria fila de execução ➜ tarefas acontecem ao mesmo tempo.</p>
+              </div>
+            </div>
+            <div class="mini-callout" style="margin-top:16px;">Threads compartilham a mesma memória do processo. Precisamos de atenção com dados compartilhados.</div>
+          </div>
+        </section> -->
+
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Duas threads em paralelo</h4>
+          <div class="prompt">Tarefas rodam simultaneamente (comparar com sequencial).</div>
+          
+<pre data-id="code-thread"><code class="language-java" data-trim data-line-numbers>
+public class Main {
+  public static void main(String[] args) {
+    // Criar 2 threads
+    Thread t1 = new Thread(() -> {
+      System.out.println("Thread-1 lendo (2s)...");
+      Thread.sleep(2000);
+      System.out.println("Thread-1 concluída");
+    });
+
+    Thread t2 = new Thread(() -> {
+      System.out.println("Thread-2 processando (1s)...");
+      Thread.sleep(1000);
+      System.out.println("Thread-2 concluída");
+    });
+
+    t1.start();
+    t2.start();
+    System.out.println("Main continua...");
+  }
+}
+</code></pre>
+          <div class="mini-callout">Total: ~2 segundos (paralelo) vs 3 segundos (sequencial)</div>
+        </section>
+
+
+
+        <section data-auto-animate>
+
+<pre data-id="code-thread"><code class="language-java" data-trim data-line-numbers>
+public class Main {
+  public static void main(String[] args) throws InterruptedException {
+    Thread t1 = new Thread(() -> {
+      System.out.println("Tarefa 1 iniciada");
+      Thread.sleep(2000);
+      System.out.println("Tarefa 1 concluída");
+    });
+
+    Thread t2 = new Thread(() -> {
+      System.out.println("Tarefa 2 iniciada");
+      Thread.sleep(1000);
+      System.out.println("Tarefa 2 concluída");
+    });
+
+    t1.start();
+    t2.start();
+
+    // Aguardar ambas terminarem
+    t1.join(); // Pausa aqui até t1 terminar
+    t2.join(); // Pausa aqui até t2 terminar
+
+    System.out.println("Todas as tarefas concluídas!");
+  }
+}
+</code></pre>
+          <div class="mini-callout">join() pausa thread main até que a filha termine.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Estados de uma thread</h4>
+          <div class="thread-states">
+            <div class="thread-state">
+              <strong>NEW</strong>
+              <div style="margin-top:6px; font-size:0.75em;">Thread criada, ainda não iniciou.</div>
+            </div>
+            <div class="thread-arrow">→</div>
+            <div class="thread-state active">
+              <strong>RUNNABLE</strong>
+              <div style="margin-top:6px; font-size:0.75em;">Pronta ou executando CPU.</div>
+            </div>
+            <div class="thread-arrow">⇄</div>
+            <div class="thread-state">
+              <strong>BLOCKED / WAITING</strong>
+              <div style="margin-top:6px; font-size:0.75em;">Aguardando lock ou evento.</div>
+            </div>
+            <div class="thread-arrow">→</div>
+            <div class="thread-state">
+              <strong>TERMINATED</strong>
+              <div style="margin-top:6px; font-size:0.75em;"><code>run()</code> terminou.</div>
+            </div>
+          </div>
+          <div class="mini-callout" style="margin-top:14px;">Threads alternam entre <strong>RUNNABLE</strong> e <strong>BLOCKED</strong> várias vezes até encerrar.</div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Atividade 1: Duas threads paralelas</h4>
+          <div class="challenge">
+            <h4>Objetivo:</h4>
+            Criar duas threads que imprimem contadores de 1 a 3 simultaneamente.
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h4 style="color:white;">Atividade 1: Duas threads paralelas</h4>
+          <div class="challenge">
+            <h4>Objetivo:</h4>
+            Criar duas threads que imprimem contadores de 1 a 3 simultaneamente.
+<pre><code class="language-java" data-trim data-line-numbers>
+public class Main {
+  public static void main(String[] args) {
+    Thread t1 = new Thread(() -> {
+      for (int i = 1; i <= 3; i++) {
+        System.out.println("Thread-A: " + i);
+        Thread.sleep(500);
+      }
+    });
+
+    Thread t2 = new Thread(() -> {
+      for (int i = 1; i <= 3; i++) {
+        System.out.println("Thread-B: " + i);
+        Thread.sleep(500);
+      }
+    });
+
+    // TODO: Iniciar ambas com start()
+    // TODO: Usar join() para aguardar conclusão
+    
+    System.out.println("Fim");
+  }
+}
+</code></pre>
+          </div>
+          <div class="mini-callout" style="margin-top:16px;">Dica: Você pode observar a ordem aleatória de execução.</div>
+        </section>
+      </section>
+
+
+
+      <!-- Encerramento -->
+      <!-- <section data-background-gradient="radial-gradient(#0f1f35, #05111f)">
+        <section>
+          <h3 style="color: white;">Resumo da Aula</h3>
+          <div style="margin-top: 30px; text-align: left; color: #d1e8ff; font-size: 0.95em; line-height: 1.8;">
+            <p><strong>Coleções:</strong> ArrayList, LinkedList, HashSet, HashMap — cada uma otimizada para cenários específicos.</p>
+            <p><strong>Threads:</strong> Executar tarefas em paralelo, sincronizar acesso a dados compartilhados, evitar race conditions.</p>
+            <p><strong>Próximos passos:</strong> Praticar com as atividades propostas e explorar coleções thread-safe.</p>
+          </div>
+        </section>
+
+        <section>
+          <h3 style="color: white;">Obrigado</h3>
+          <p style="color: #d1e8ff; font-size: 1.1em; margin-top: 20px;">
+            Pratiquem os exemplos e desafios propostos.
+          </p>
+        </section>
+      </section> -->
+    </div>
+  </div>
+
+  <!-- Scripts Reveal.js -->
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      center: false,
+      controls: true,
+      progress: true,
+      slideNumber: true,
+      history: true,
+      transition: 'convex',
+      plugins: [RevealMarkdown, RevealHighlight, RevealMenu],
+      markdown: { smartypants: true },
+      width: 1200,
+      height: 800,
+      hash: true,
+      respondToHashChanges: true,
+      menu: { side: 'left', width: 300, numbers: true, titleSelector: 'h1, h2, h3, h4, h5, h6' }
+    });
+
+    // Botões de copiar código
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code').forEach(block => {
+        const pre = block.parentElement;
+        if(pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = 'Copiar';
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(block.innerText).then(() => {
+            const old = btn.textContent;
+            btn.textContent = 'Copiado!';
+            setTimeout(() => btn.textContent = old, 1500);
+          });
+        });
+        pre.appendChild(btn);
+      });
+
+      // Animação de elementos nas visualizações
+      Reveal.on('slidechanged', event => {
+        const slide = event.currentSlide;
+        
+        // Animar elementos de coleção
+        const elements = slide.querySelectorAll('.element-animated');
+        elements.forEach((el, index) => {
+          setTimeout(() => {
+            el.style.animation = 'pulse-in 0.5s ease-out';
+          }, index * 150);
+        });
+
+        // Animar nós de estado
+        const stateNodes = slide.querySelectorAll('.thread-state');
+        stateNodes.forEach((node, index) => {
+          node.style.animation = `state-transition ${0.3 + index * 0.2}s ease-in-out`;
+        });
+
+        // Animar faixas de tempo das threads
+        const threadTracks = slide.querySelectorAll('.thread-track');
+        threadTracks.forEach((bar, index) => {
+          setTimeout(() => {
+            bar.style.opacity = '0.5';
+            setTimeout(() => bar.style.opacity = '1', 100);
+          }, index * 300);
+        });
+      });
+
+      // Animação de hover para elementos interativos
+      document.querySelectorAll('.element').forEach(el => {
+        el.addEventListener('mouseover', function() {
+          this.style.transform = 'scale(1.1)';
+          this.style.boxShadow = '0 0 15px rgba(124, 196, 255, 0.6)';
+        });
+        el.addEventListener('mouseout', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
