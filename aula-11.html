@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Aula 11: POO - Persistência de Dados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Reveal.js CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+  <style>
+    .reveal pre code { font-size: 0.85em; line-height: 1.3; max-height: 500px; }
+    .reveal section img { border-radius: 8px; }
+    .reveal h3 { color: #42b983; margin-bottom: 30px; }
+    .reveal h4 { color: #64b5f6; margin-top: 20px; }
+    .badge { display:inline-block; padding:.3em .8em; border-radius: 5px; background:#e74c3c; color:#fff; font-size:.8em; font-weight: bold; }
+    .four-blocks { display: grid; grid-template-columns: 1fr 1fr; grid-gap: 30px; margin: 40px 0; }
+    .block { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 15px; text-align: center; font-size: 1.2em; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .highlight { color: #ffd700; font-weight: bold; }
+    .connection-box { background: #2c3e50; padding: 15px; border-radius: 8px; margin: 20px 0; font-family: monospace; font-size: 0.8em; }
+    .important { border-left: 4px solid #e74c3c; padding-left: 15px; margin: 20px 0; }
+    .footer { position: fixed; bottom: 10px; left: 10px; font-size: 0.5em; color: #7f8c8d; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- CAPA -->
+      <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+        <h1 style="font-size: 2.5em;">POO: Aula 11</h1>
+        <h2>Persistência de Dados</h2>
+        <p style="margin-top: 50px;"><span class="badge">Java + JDBC + SQL</span></p>
+        <div >
+          <p><strong>Me. Nator Junior</strong> | Faculdade Senac Ceará</p>
+        </div>
+      </section>
+
+      <!-- AGENDA -->
+      <section>
+        <h3>📋 Agenda</h3>
+        <ol style="font-size: 1.3em; line-height: 2;">
+          <li>🔌 JDBC: Conectando ao Banco</li>
+          <li>🗄️ SQL: Comandos DDL</li>
+          <li>✏️ SQL: Operações DML/CRUD</li>
+          <li>🎯 Atividades Práticas</li>
+        </ol>
+      </section>
+
+      <!-- PARTE 1: JDBC -->
+      <section>
+        <!-- Slide de abertura Parte 1 -->
+        <section data-background="#1a1a2e">
+          <h1 style="font-size: 2.5em;">🔌 Parte 1</h1>
+          <h2>JDBC</h2>
+          <p style="font-size: 1.2em; margin-top: 30px;">Conectando Java ao Banco de Dados</p>
+        </section>
+
+        <!-- Subsessão 1.1: Introdução -->
+        <section>
+          <h3>1.1 O que é JDBC?</h3>
+          <p style="font-size: 1.4em; margin: 40px 0;"><strong>J</strong>ava <strong>D</strong>ata<strong>B</strong>ase <strong>C</strong>onnectivity</p>
+          <ul style="font-size: 1.1em; line-height: 1.8;">
+            <li>🔗 API Java para conectar com bancos de dados</li>
+            <li>🗄️ MySQL, PostgreSQL, Oracle, SQLite...</li>
+            <li>🌍 Multiplataforma e independente de banco</li>
+          </ul>
+          <div style="margin-top: 50px; padding: 25px; background: #2c3e50; border-radius: 10px; font-size: 1.2em;">
+            <p>💡 <strong>Fluxo:</strong> Java ↔️ JDBC ↔️ Banco de Dados</p>
+          </div>
+        </section>
+
+        <!-- Subsessão 1.2: Conectar -->
+        <section>
+          <h3>1.2 Estabelecendo Conexão</h3>
+          <pre><code class="language-java" data-trim>
+import java.sql.*;
+
+public class ConexaoDB {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/meuBanco";
+        String usuario = "root";
+        String senha = "123456";
+        
+        try (Connection conn = DriverManager.getConnection(url, usuario, senha)) {
+            System.out.println("✅ Conectado com sucesso!");
+        } catch (SQLException e) {
+            System.out.println("❌ Erro: " + e.getMessage());
+        }
+    }
+}
+          </code></pre>
+          <div class="connection-box">
+            <strong>URL Pattern:</strong> jdbc:mysql://<em>HOST</em>:<em>PORTA</em>/<em>BANCO</em>
+          </div>
+        </section>
+
+        <!-- Subsessão 1.3: SELECT -->
+        <section>
+          <h3>1.3 Consultando Dados (SELECT)</h3>
+          <pre><code class="language-java" data-trim>
+String sql = "SELECT id, nome, email FROM usuarios";
+
+try (Connection conn = DriverManager.getConnection(url, user, pass);
+     Statement stmt = conn.createStatement();
+     ResultSet rs = stmt.executeQuery(sql)) {
+    
+    while (rs.next()) {
+        int id = rs.getInt("id");
+        String nome = rs.getString("nome");
+        String email = rs.getString("email");
+        
+        System.out.println(id + " | " + nome + " | " + email);
+    }
+}
+          </code></pre>
+          <p class="important">📦 <code>ResultSet</code> contém os dados retornados</p>
+        </section>
+
+        <!-- Subsessão 1.4: INSERT -->
+        <section>
+          <h3>1.4 Inserindo Dados (INSERT)</h3>
+          <pre><code class="language-java" data-trim>
+String sql = "INSERT INTO usuarios (nome, email, telefone) VALUES (?, ?, ?)";
+
+try (Connection conn = DriverManager.getConnection(url, user, pass);
+     PreparedStatement ps = conn.prepareStatement(sql)) {
+    
+    ps.setString(1, "Maria Santos");
+    ps.setString(2, "maria@email.com");
+    ps.setString(3, "85987654321");
+    
+    int linhas = ps.executeUpdate();
+    System.out.println("✅ " + linhas + " registro inserido!");
+}
+          </code></pre>
+          <p class="important">🔒 <code>PreparedStatement</code> previne SQL Injection!</p>
+        </section>
+
+        <!-- Subsessão 1.5: UPDATE -->
+        <section>
+          <h3>1.5 Atualizando Dados (UPDATE)</h3>
+          <pre><code class="language-java" data-trim>
+String sql = "UPDATE usuarios SET email = ?, telefone = ? WHERE id = ?";
+
+try (Connection conn = DriverManager.getConnection(url, user, pass);
+     PreparedStatement ps = conn.prepareStatement(sql)) {
+    
+    ps.setString(1, "maria.santos@email.com");
+    ps.setString(2, "85999887766");
+    ps.setInt(3, 5);
+    
+    int linhas = ps.executeUpdate();
+    System.out.println("✅ " + linhas + " registro(s) atualizado(s)");
+}
+          </code></pre>
+        </section>
+
+        <!-- Subsessão 1.6: DELETE -->
+        <section>
+          <h3>1.6 Deletando Dados (DELETE)</h3>
+          <pre><code class="language-java" data-trim>
+String sql = "DELETE FROM usuarios WHERE id = ?";
+
+try (Connection conn = DriverManager.getConnection(url, user, pass);
+     PreparedStatement ps = conn.prepareStatement(sql)) {
+    
+    ps.setInt(1, 5);
+    
+    int linhas = ps.executeUpdate();
+    System.out.println("🗑️ " + linhas + " registro(s) deletado(s)");
+}
+          </code></pre>
+          <p class="important">⚠️ Sempre use <code>WHERE</code> para evitar deletar tudo!</p>
+        </section>
+
+      </section>
+
+      <!-- PARTE 2: ATIVIDADES PRÁTICAS -->
+      <section>
+        <!-- Slide de abertura Parte 2 -->
+        <section data-background="#16213e">
+          <h1 style="font-size: 2.5em;">🎯 Parte 2</h1>
+          <h2>Atividades Práticas</h2>
+          <p style="font-size: 1.2em; margin-top: 30px;">Banco de Dados: <span class="highlight">aula_java</span></p>
+        </section>
+
+        <!-- Subsessão 2.1: Ambiente -->
+        <section>
+          <h3>2.1 Ambiente de Desenvolvimento</h3>
+          <div class="four-blocks" style="grid-template-columns: 1fr 1fr; font-size: 0.9em;">
+            <div class="block">🐬 MySQL<br/>localhost:3306</div>
+            <div class="block">🐘 phpMyAdmin<br/>localhost:8081</div>
+            <div class="block">📚 Materiais<br/>localhost:8080</div>
+            <div class="block">☕ Java + JDBC<br/>Projeto Maven</div>
+          </div>
+          <div class="connection-box" style="margin-top: 30px;">
+            <strong>Credenciais:</strong><br/>
+            Usuário: <span class="highlight">aluno</span> | Senha: <span class="highlight">aluno123</span><br/>
+            Database: <span class="highlight">aula_java</span>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.2: Estrutura do Banco -->
+        <section>
+          <h3>2.2 Estrutura do Banco de Dados</h3>
+          <div style="font-size: 0.9em; text-align: left;">
+            <h4>📋 Tabela: alunos</h4>
+            <ul style="font-size: 0.95em; line-height: 1.6;">
+              <li><code>id</code> (INT, PK) | <code>nome</code> (VARCHAR) | <code>email</code> (VARCHAR, UNIQUE)</li>
+              <li><code>data_nascimento</code> (DATE) | <code>curso</code> (VARCHAR) | <code>ativo</code> (BOOLEAN)</li>
+            </ul>
+            
+            <h4>📚 Tabela: disciplinas</h4>
+            <ul style="font-size: 0.95em; line-height: 1.6;">
+              <li><code>id</code> (INT, PK) | <code>nome</code> (VARCHAR) | <code>codigo</code> (VARCHAR, UNIQUE)</li>
+              <li><code>carga_horaria</code> (INT) | <code>creditos</code> (INT)</li>
+            </ul>
+            
+            <h4>✅ Tabela: matriculas</h4>
+            <ul style="font-size: 0.95em; line-height: 1.6;">
+              <li><code>id</code> (INT, PK) | <code>aluno_id</code> (FK) | <code>disciplina_id</code> (FK)</li>
+              <li><code>semestre</code> (VARCHAR) | <code>nota_final</code> (DECIMAL) | <code>status</code> (ENUM)</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.3: Dados Disponíveis -->
+        <section>
+          <h3>2.3 Dados Pré-cadastrados</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; font-size: 0.85em;">
+            <div style="background: #2c3e50; padding: 20px; border-radius: 10px;">
+              <h4 style="color: #3498db; margin-top: 0;">👥 Alunos</h4>
+              <p style="font-size: 2em; margin: 15px 0; color: #2ecc71;">8</p>
+              <p style="font-size: 0.9em;">registros</p>
+            </div>
+            <div style="background: #2c3e50; padding: 20px; border-radius: 10px;">
+              <h4 style="color: #9b59b6; margin-top: 0;">📚 Disciplinas</h4>
+              <p style="font-size: 2em; margin: 15px 0; color: #2ecc71;">8</p>
+              <p style="font-size: 0.9em;">registros</p>
+            </div>
+            <div style="background: #2c3e50; padding: 20px; border-radius: 10px;">
+              <h4 style="color: #e74c3c; margin-top: 0;">✅ Matrículas</h4>
+              <p style="font-size: 2em; margin: 15px 0; color: #2ecc71;">13</p>
+              <p style="font-size: 0.9em;">registros</p>
+            </div>
+          </div>
+          <p style="margin-top: 40px; font-size: 1.1em;">
+            💡 Use <strong>phpMyAdmin</strong> para explorar os dados!
+          </p>
+        </section>
+
+        <!-- Subsessão 2.4: Atividade 1 -->
+        <section>
+          <h3>🎯 Atividade 1: Listar Alunos</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Criar um programa que liste todos os alunos cadastrados
+          </div>
+          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+            <h4>📝 Requisitos:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ Conectar ao banco <code>aula_java</code></li>
+              <li>✅ Executar SELECT na tabela <code>alunos</code></li>
+              <li>✅ Exibir: ID, Nome, Email e Curso</li>
+              <li>✅ Ordenar por nome alfabeticamente</li>
+            </ul>
+            <h4 style="margin-top: 25px;">🎯 Resultado Esperado:</h4>
+            <p style="background: #2c3e50; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.85em;">
+              8 alunos listados em ordem alfabética
+            </p>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.5: Atividade 2 -->
+        <section>
+          <h3>🎯 Atividade 2: Buscar Aluno por Email</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Implementar busca de aluno específico usando PreparedStatement
+          </div>
+          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+            <h4>📝 Requisitos:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ Criar método <code>buscarPorEmail(String email)</code></li>
+              <li>✅ Usar <strong>PreparedStatement</strong></li>
+              <li>✅ Retornar dados do aluno ou mensagem "não encontrado"</li>
+            </ul>
+            <h4 style="margin-top: 25px;">🧪 Teste com:</h4>
+            <pre><code class="language-java" data-trim style="font-size: 0.75em;">
+buscarPorEmail("joao.silva@email.com");
+// Deve retornar: João Silva - Ciência da Computação
+            </code></pre>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.6: Atividade 3 -->
+        <section>
+          <h3>🎯 Atividade 3: Inserir Novo Aluno</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Adicionar um novo aluno ao banco de dados
+          </div>
+          <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+            <h4>📝 Requisitos:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ Usar <code>PreparedStatement</code> para INSERT</li>
+              <li>✅ Capturar ID gerado automaticamente</li>
+              <li>✅ Tratar exceção de email duplicado</li>
+            </ul>
+            <h4 style="margin-top: 25px;">📊 Dados de Teste:</h4>
+            <pre><code class="language-java" data-trim style="font-size: 0.7em;">
+Nome: "Mariana Oliveira"
+Email: "mariana.oliveira@email.com"
+Data Nascimento: 2001-04-20
+Curso: "Ciência da Computação"
+Ativo: true
+            </code></pre>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.7: Atividade 4 -->
+        <section>
+          <h3>🎯 Atividade 4: Listar Alunos por Curso</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Filtrar alunos de um curso específico
+          </div>
+          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+            <h4>📝 Requisitos:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ WHERE com filtro de curso</li>
+              <li>✅ Busca case-insensitive (LOWER)</li>
+              <li>✅ Exibir contagem de alunos</li>
+            </ul>
+            <h4 style="margin-top: 25px;">🧪 Testes:</h4>
+            <div style="background: #2c3e50; padding: 15px; border-radius: 8px; font-size: 0.85em;">
+              <p>"Ciência da Computação" → <span class="highlight">4 alunos</span></p>
+              <p>"Sistemas de Informação" → <span class="highlight">3 alunos</span></p>
+              <p>"Engenharia de Software" → <span class="highlight">1 aluno</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.8: Atividade 5 -->
+        <section>
+          <h3>🎯 Atividade 5: Calcular Média do Aluno</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Usar JOIN e função AVG para calcular média de notas
+          </div>
+          <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
+            <h4>📝 SQL Esperado:</h4>
+            <pre><code class="language-sql" data-trim style="font-size: 0.75em;">
+SELECT a.nome, AVG(m.nota_final) as media
+FROM alunos a
+JOIN matriculas m ON a.id = m.aluno_id
+WHERE a.id = ? AND m.nota_final IS NOT NULL
+GROUP BY a.nome;
+            </code></pre>
+            <h4 style="margin-top: 25px;">🧪 Teste:</h4>
+            <p style="background: #2c3e50; padding: 15px; border-radius: 8px;">
+              Aluno ID 1 (João Silva) → média = <span class="highlight">8.15</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.9: Atividade 6 -->
+        <section>
+          <h3>🎯 Atividade 6: Ranking de Alunos</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Criar ranking dos melhores alunos por média
+          </div>
+          <div style="text-align: left; font-size: 0.8em; margin-top: 30px;">
+            <h4>📝 Requisitos:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ JOIN entre alunos e matrículas</li>
+              <li>✅ GROUP BY com AVG</li>
+              <li>✅ ORDER BY média DESC</li>
+              <li>✅ Exibir: posição, nome, média</li>
+            </ul>
+            <h4 style="margin-top: 25px;">📊 Formato de Saída:</h4>
+            <pre><code class="language-text" data-trim style="font-size: 0.7em;">
+=== TOP 5 ALUNOS ===
+1º - Ana Costa - Média: 9.50
+2º - João Silva - Média: 8.15
+3º - Maria Santos - Média: 8.00
+...
+            </code></pre>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.10: Atividade DESAFIO -->
+        <section>
+          <h3>🏆 Desafio: Sistema de Matrícula</h3>
+          <div class="important" style="text-align: left;">
+            <strong>Objetivo:</strong> Implementar sistema completo de matrícula com validações
+          </div>
+          <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
+            <h4>📝 Funcionalidades:</h4>
+            <ul style="line-height: 1.8;">
+              <li>✅ Matricular aluno em disciplina</li>
+              <li>✅ Validar se aluno já está matriculado</li>
+              <li>✅ Validar se aluno e disciplina existem</li>
+              <li>✅ Usar <strong>transações</strong> (commit/rollback)</li>
+              <li>✅ Lançar notas e atualizar status automaticamente</li>
+            </ul>
+            <h4 style="margin-top: 25px;">🎁 Pontos Extras:</h4>
+            <p style="background: #16a085; padding: 10px; border-radius: 8px;">
+              Interface gráfica (Swing/JavaFX) ou menu console interativo
+            </p>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.11: Recursos Disponíveis -->
+        <section>
+          <h3>📚 Recursos para as Atividades</h3>
+          <div style="text-align: left; font-size: 0.95em;">
+            <h4>🌐 Materiais Online:</h4>
+            <ul style="line-height: 1.8;">
+              <li>📖 Documentação: <code>http://localhost:8080</code></li>
+              <li>💻 Exemplos de Código: <code>localhost:8080/exemplos.html</code></li>
+              <li>📝 Lista Completa: <code>localhost:8080/atividades.html</code></li>
+              <li>🐘 phpMyAdmin: <code>http://localhost:8081</code></li>
+            </ul>
+            <h4 style="margin-top: 30px;">📁 No Projeto:</h4>
+            <ul style="line-height: 1.8;">
+              <li><code>sql/scripts/consultas-exemplo.sql</code></li>
+              <li><code>src/.../DatabaseConnection.java</code></li>
+              <li><code>src/.../AlunoDAO.java</code></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.12: Critérios de Avaliação -->
+        <section>
+          <h3>📊 Critérios de Avaliação</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.85em; margin-top: 30px;">
+            <div style="background: #27ae60; padding: 20px; border-radius: 10px;">
+              <h4 style="margin-top: 0;">✅ Funcionalidade (40%)</h4>
+              <ul style="text-align: left; line-height: 1.6;">
+                <li>Código executa corretamente</li>
+                <li>Resultados corretos</li>
+                <li>Atende requisitos</li>
+              </ul>
+            </div>
+            <div style="background: #2980b9; padding: 20px; border-radius: 10px;">
+              <h4 style="margin-top: 0;">💡 Boas Práticas (30%)</h4>
+              <ul style="text-align: left; line-height: 1.6;">
+                <li>PreparedStatement</li>
+                <li>Try-with-resources</li>
+                <li>Código organizado</li>
+              </ul>
+            </div>
+            <div style="background: #e67e22; padding: 20px; border-radius: 10px;">
+              <h4 style="margin-top: 0;">🛡️ Segurança (20%)</h4>
+              <ul style="text-align: left; line-height: 1.6;">
+                <li>Sem SQL Injection</li>
+                <li>Validações de dados</li>
+                <li>Tratamento de erros</li>
+              </ul>
+            </div>
+            <div style="background: #8e44ad; padding: 20px; border-radius: 10px;">
+              <h4 style="margin-top: 0;">📝 Documentação (10%)</h4>
+              <ul style="text-align: left; line-height: 1.6;">
+                <li>Comentários úteis</li>
+                <li>JavaDoc</li>
+                <li>README</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Subsessão 2.13: Dicas Finais -->
+        <section>
+          <h3>💡 Dicas para Sucesso</h3>
+          <div style="text-align: left; font-size: 0.95em;">
+            <div style="background: #2c3e50; padding: 20px; border-radius: 10px; margin: 15px 0;">
+              <h4 style="color: #3498db; margin-top: 0;">📝 Antes de Começar:</h4>
+              <ul style="line-height: 1.8;">
+                <li>Teste SQL no phpMyAdmin primeiro</li>
+                <li>Leia todo o enunciado com atenção</li>
+                <li>Identifique quais tabelas usar</li>
+              </ul>
+            </div>
+            <div style="background: #2c3e50; padding: 20px; border-radius: 10px; margin: 15px 0;">
+              <h4 style="color: #e74c3c; margin-top: 0;">🐛 Durante o Desenvolvimento:</h4>
+              <ul style="line-height: 1.8;">
+                <li>Use <code>printStackTrace()</code> para debug</li>
+                <li>Teste cada método individualmente</li>
+                <li>Sempre feche conexões (try-with-resources)</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </section>
+
+      <!-- ENCERRAMENTO -->
+      <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+        <h1 style="font-size: 3em;">Obrigado! 🎓</h1>
+        <p style="font-size: 1.5em; margin-top: 50px;">Dúvidas?</p>
+        <div style="margin-top: 60px; font-size: 1.1em;">
+          <p>📚 Materiais: <strong>http://localhost:8080</strong></p>
+          <p>📝 Atividades: <strong>localhost:8080/atividades.html</strong></p>
+        </div>
+        <div style="margin-top: 60px; font-size: 0.9em;">
+          <p><strong>Me. Nator Junior</strong></p>
+          <p>natorjuniorcc@gmail.com</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Reveal.js Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      transition: 'slide',
+      plugins: [RevealNotes, RevealHighlight]
+    });
+  </script>
+</body>
+</html>
