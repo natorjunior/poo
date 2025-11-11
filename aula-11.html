@@ -190,7 +190,7 @@ try (Connection conn = DriverManager.getConnection(url, user, pass);
           <h3>2.1 Ambiente de Desenvolvimento</h3>
           <div class="four-blocks" style="grid-template-columns: 1fr 1fr; font-size: 0.9em;">
             <div class="block">🐬 MySQL<br/>localhost:3306</div>
-            <div class="block">🐘 phpMyAdmin<br/>localhost:8081</div>
+            <div class="block">🐘 Mysql Workbench<br/></div>
             <div class="block">📚 Materiais<br/>localhost:8080</div>
             <div class="block">☕ Java + JDBC<br/>Projeto Maven</div>
           </div>
@@ -198,30 +198,6 @@ try (Connection conn = DriverManager.getConnection(url, user, pass);
             <strong>Credenciais:</strong><br/>
             Usuário: <span class="highlight">aluno</span> | Senha: <span class="highlight">aluno123</span><br/>
             Database: <span class="highlight">aula_java</span>
-          </div>
-        </section>
-
-        <!-- Subsessão 2.2: Estrutura do Banco -->
-        <section>
-          <h3>2.2 Estrutura do Banco de Dados</h3>
-          <div style="font-size: 0.9em; text-align: left;">
-            <h4>📋 Tabela: alunos</h4>
-            <ul style="font-size: 0.95em; line-height: 1.6;">
-              <li><code>id</code> (INT, PK) | <code>nome</code> (VARCHAR) | <code>email</code> (VARCHAR, UNIQUE)</li>
-              <li><code>data_nascimento</code> (DATE) | <code>curso</code> (VARCHAR) | <code>ativo</code> (BOOLEAN)</li>
-            </ul>
-            
-            <h4>📚 Tabela: disciplinas</h4>
-            <ul style="font-size: 0.95em; line-height: 1.6;">
-              <li><code>id</code> (INT, PK) | <code>nome</code> (VARCHAR) | <code>codigo</code> (VARCHAR, UNIQUE)</li>
-              <li><code>carga_horaria</code> (INT) | <code>creditos</code> (INT)</li>
-            </ul>
-            
-            <h4>✅ Tabela: matriculas</h4>
-            <ul style="font-size: 0.95em; line-height: 1.6;">
-              <li><code>id</code> (INT, PK) | <code>aluno_id</code> (FK) | <code>disciplina_id</code> (FK)</li>
-              <li><code>semestre</code> (VARCHAR) | <code>nota_final</code> (DECIMAL) | <code>status</code> (ENUM)</li>
-            </ul>
           </div>
         </section>
 
@@ -246,7 +222,7 @@ try (Connection conn = DriverManager.getConnection(url, user, pass);
             </div>
           </div>
           <p style="margin-top: 40px; font-size: 1.1em;">
-            💡 Use <strong>phpMyAdmin</strong> para explorar os dados!
+            💡 Use <strong>Mysql Workbench</strong> para explorar os dados!
           </p>
         </section>
 
@@ -256,7 +232,7 @@ try (Connection conn = DriverManager.getConnection(url, user, pass);
           <div class="important" style="text-align: left;">
             <strong>Objetivo:</strong> Criar um programa que liste todos os alunos cadastrados
           </div>
-          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+          <div style="text-align: left; font-size: 0.65em; margin-top: 0px;">
             <h4>📝 Requisitos:</h4>
             <ul style="line-height: 1.8;">
               <li>✅ Conectar ao banco <code>aula_java</code></li>
@@ -277,7 +253,7 @@ try (Connection conn = DriverManager.getConnection(url, user, pass);
           <div class="important" style="text-align: left;">
             <strong>Objetivo:</strong> Implementar busca de aluno específico usando PreparedStatement
           </div>
-          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+          <div style="text-align: left; font-size: 0.55em; margin-top: 0px;">
             <h4>📝 Requisitos:</h4>
             <ul style="line-height: 1.8;">
               <li>✅ Criar método <code>buscarPorEmail(String email)</code></li>
@@ -302,8 +278,6 @@ buscarPorEmail("joao.silva@email.com");
             <h4>📝 Requisitos:</h4>
             <ul style="line-height: 1.8;">
               <li>✅ Usar <code>PreparedStatement</code> para INSERT</li>
-              <li>✅ Capturar ID gerado automaticamente</li>
-              <li>✅ Tratar exceção de email duplicado</li>
             </ul>
             <h4 style="margin-top: 25px;">📊 Dados de Teste:</h4>
             <pre><code class="language-java" data-trim style="font-size: 0.7em;">
@@ -322,15 +296,14 @@ Ativo: true
           <div class="important" style="text-align: left;">
             <strong>Objetivo:</strong> Filtrar alunos de um curso específico
           </div>
-          <div style="text-align: left; font-size: 0.95em; margin-top: 30px;">
+          <div style="text-align: left; font-size: 0.65em; margin-top: 0px;">
             <h4>📝 Requisitos:</h4>
             <ul style="line-height: 1.8;">
               <li>✅ WHERE com filtro de curso</li>
-              <li>✅ Busca case-insensitive (LOWER)</li>
               <li>✅ Exibir contagem de alunos</li>
             </ul>
-            <h4 style="margin-top: 25px;">🧪 Testes:</h4>
-            <div style="background: #2c3e50; padding: 15px; border-radius: 8px; font-size: 0.85em;">
+            <h4 style="margin-top: 5px;">🧪 Testes:</h4>
+            <div style="background: #2c3e50; padding: 5px; border-radius: 8px; font-size: 0.65em;">
               <p>"Ciência da Computação" → <span class="highlight">4 alunos</span></p>
               <p>"Sistemas de Informação" → <span class="highlight">3 alunos</span></p>
               <p>"Engenharia de Software" → <span class="highlight">1 aluno</span></p>
@@ -338,157 +311,164 @@ Ativo: true
           </div>
         </section>
 
-        <!-- Subsessão 2.8: Atividade 5 -->
-        <section>
-          <h3>🎯 Atividade 5: Calcular Média do Aluno</h3>
-          <div class="important" style="text-align: left;">
-            <strong>Objetivo:</strong> Usar JOIN e função AVG para calcular média de notas
-          </div>
-          <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
-            <h4>📝 SQL Esperado:</h4>
-            <pre><code class="language-sql" data-trim style="font-size: 0.75em;">
-SELECT a.nome, AVG(m.nota_final) as media
-FROM alunos a
-JOIN matriculas m ON a.id = m.aluno_id
-WHERE a.id = ? AND m.nota_final IS NOT NULL
-GROUP BY a.nome;
-            </code></pre>
-            <h4 style="margin-top: 25px;">🧪 Teste:</h4>
-            <p style="background: #2c3e50; padding: 15px; border-radius: 8px;">
-              Aluno ID 1 (João Silva) → média = <span class="highlight">8.15</span>
-            </p>
-          </div>
+        <!-- RESOLUÇÕES -->
+        <section data-background="#0f3460">
+          <h2 style="font-size: 2.5em;">💡 Resoluções</h2>
+          <p style="font-size: 1.3em; margin-top: 30px;">Soluções das Atividades</p>
         </section>
 
-        <!-- Subsessão 2.9: Atividade 6 -->
+        <!-- Resolução Atividade 1 -->
         <section>
-          <h3>🎯 Atividade 6: Ranking de Alunos</h3>
-          <div class="important" style="text-align: left;">
-            <strong>Objetivo:</strong> Criar ranking dos melhores alunos por média
-          </div>
-          <div style="text-align: left; font-size: 0.8em; margin-top: 30px;">
-            <h4>📝 Requisitos:</h4>
-            <ul style="line-height: 1.8;">
-              <li>✅ JOIN entre alunos e matrículas</li>
-              <li>✅ GROUP BY com AVG</li>
-              <li>✅ ORDER BY média DESC</li>
-              <li>✅ Exibir: posição, nome, média</li>
-            </ul>
-            <h4 style="margin-top: 25px;">📊 Formato de Saída:</h4>
-            <pre><code class="language-text" data-trim style="font-size: 0.7em;">
-=== TOP 5 ALUNOS ===
-1º - Ana Costa - Média: 9.50
-2º - João Silva - Média: 8.15
-3º - Maria Santos - Média: 8.00
-...
-            </code></pre>
-          </div>
+          <h3>Resolução Atividade 1: Listar Alunos</h3>
+          <pre><code class="language-java" data-trim style="font-size: 0.65em;">
+import java.sql.*;
+
+public class ListarAlunos {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/aula_java";
+        String user = "aluno";
+        String pass = "aluno123";
+        String sql = "SELECT id, nome, email, curso FROM alunos ORDER BY nome";
+        
+        try (Connection conn = DriverManager.getConnection(url, user, pass);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            System.out.println("=== LISTA DE ALUNOS ===");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                String email = rs.getString("email");
+                String curso = rs.getString("curso");
+                
+                System.out.printf("%d | %s | %s | %s%n", id, nome, email, curso);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Erro: " + e.getMessage());
+        }
+    }
+}
+          </code></pre>
         </section>
 
-        <!-- Subsessão 2.10: Atividade DESAFIO -->
+        <!-- Resolução Atividade 2 -->
         <section>
-          <h3>🏆 Desafio: Sistema de Matrícula</h3>
-          <div class="important" style="text-align: left;">
-            <strong>Objetivo:</strong> Implementar sistema completo de matrícula com validações
-          </div>
-          <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
-            <h4>📝 Funcionalidades:</h4>
-            <ul style="line-height: 1.8;">
-              <li>✅ Matricular aluno em disciplina</li>
-              <li>✅ Validar se aluno já está matriculado</li>
-              <li>✅ Validar se aluno e disciplina existem</li>
-              <li>✅ Usar <strong>transações</strong> (commit/rollback)</li>
-              <li>✅ Lançar notas e atualizar status automaticamente</li>
-            </ul>
-            <h4 style="margin-top: 25px;">🎁 Pontos Extras:</h4>
-            <p style="background: #16a085; padding: 10px; border-radius: 8px;">
-              Interface gráfica (Swing/JavaFX) ou menu console interativo
-            </p>
-          </div>
+          <h3> Resolução Atividade 2: Buscar por Email</h3>
+          <pre><code class="language-java" data-trim style="font-size: 0.6em;">
+public static void buscarPorEmail(String email) {
+    String url = "jdbc:mysql://localhost:3306/aula_java";
+    String user = "aluno";
+    String pass = "aluno123";
+    String sql = "SELECT id, nome, email, curso FROM alunos WHERE email = ?";
+    
+    try (Connection conn = DriverManager.getConnection(url, user, pass);
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            System.out.println("Aluno encontrado:");
+            System.out.println("ID: " + rs.getInt("id"));
+            System.out.println("Nome: " + rs.getString("nome"));
+            System.out.println("Email: " + rs.getString("email"));
+            System.out.println("Curso: " + rs.getString("curso"));
+        } else {
+            System.out.println("Aluno não encontrado!");
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Erro: " + e.getMessage());
+    }
+}
+
+// Teste:
+buscarPorEmail("joao.silva@email.com");
+          </code></pre>
         </section>
 
-        <!-- Subsessão 2.11: Recursos Disponíveis -->
+        <!-- Resolução Atividade 3 -->
         <section>
-          <h3>📚 Recursos para as Atividades</h3>
-          <div style="text-align: left; font-size: 0.95em;">
-            <h4>🌐 Materiais Online:</h4>
-            <ul style="line-height: 1.8;">
-              <li>📖 Documentação: <code>http://localhost:8080</code></li>
-              <li>💻 Exemplos de Código: <code>localhost:8080/exemplos.html</code></li>
-              <li>📝 Lista Completa: <code>localhost:8080/atividades.html</code></li>
-              <li>🐘 phpMyAdmin: <code>http://localhost:8081</code></li>
-            </ul>
-            <h4 style="margin-top: 30px;">📁 No Projeto:</h4>
-            <ul style="line-height: 1.8;">
-              <li><code>sql/scripts/consultas-exemplo.sql</code></li>
-              <li><code>src/.../DatabaseConnection.java</code></li>
-              <li><code>src/.../AlunoDAO.java</code></li>
-            </ul>
-          </div>
+          <h3>Resolução Atividade 3: Inserir Aluno</h3>
+          <pre><code class="language-java" data-trim style="font-size: 0.55em;">
+public static void inserirAluno() {
+    String url = "jdbc:mysql://localhost:3306/aula_java";
+    String user = "aluno";
+    String pass = "aluno123";
+    String sql = "INSERT INTO alunos (nome, email, data_nascimento, curso, ativo) " +
+                 "VALUES (?, ?, ?, ?, ?)";
+    
+    try (Connection conn = DriverManager.getConnection(url, user, pass);
+         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        
+        ps.setString(1, "Mariana Oliveira");
+        ps.setString(2, "mariana.oliveira@email.com");
+        ps.setDate(3, Date.valueOf("2001-04-20"));
+        ps.setString(4, "Ciência da Computação");
+        ps.setBoolean(5, true);
+        
+        int linhas = ps.executeUpdate();
+        
+        if (linhas > 0) {
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                System.out.println("Aluno inserido com ID: " + rs.getInt(1));
+            }
+        }
+        
+    } catch (SQLException e) {
+        System.err.println("Erro ao inserir: " + e.getMessage());
+        if (e.getMessage().contains("Duplicate entry")) {
+            System.err.println("Email já cadastrado!");
+        }
+    }
+}
+          </code></pre>
         </section>
 
-        <!-- Subsessão 2.12: Critérios de Avaliação -->
+        <!-- Resolução Atividade 4 -->
         <section>
-          <h3>📊 Critérios de Avaliação</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.85em; margin-top: 30px;">
-            <div style="background: #27ae60; padding: 20px; border-radius: 10px;">
-              <h4 style="margin-top: 0;">✅ Funcionalidade (40%)</h4>
-              <ul style="text-align: left; line-height: 1.6;">
-                <li>Código executa corretamente</li>
-                <li>Resultados corretos</li>
-                <li>Atende requisitos</li>
-              </ul>
-            </div>
-            <div style="background: #2980b9; padding: 20px; border-radius: 10px;">
-              <h4 style="margin-top: 0;">💡 Boas Práticas (30%)</h4>
-              <ul style="text-align: left; line-height: 1.6;">
-                <li>PreparedStatement</li>
-                <li>Try-with-resources</li>
-                <li>Código organizado</li>
-              </ul>
-            </div>
-            <div style="background: #e67e22; padding: 20px; border-radius: 10px;">
-              <h4 style="margin-top: 0;">🛡️ Segurança (20%)</h4>
-              <ul style="text-align: left; line-height: 1.6;">
-                <li>Sem SQL Injection</li>
-                <li>Validações de dados</li>
-                <li>Tratamento de erros</li>
-              </ul>
-            </div>
-            <div style="background: #8e44ad; padding: 20px; border-radius: 10px;">
-              <h4 style="margin-top: 0;">📝 Documentação (10%)</h4>
-              <ul style="text-align: left; line-height: 1.6;">
-                <li>Comentários úteis</li>
-                <li>JavaDoc</li>
-                <li>README</li>
-              </ul>
-            </div>
-          </div>
+          <h3>Resolução Atividade 4: Listar por Curso</h3>
+          <pre><code class="language-java" data-trim style="font-size: 0.58em;">
+public static void listarPorCurso(String curso) {
+    String url = "jdbc:mysql://localhost:3306/aula_java";
+    String user = "aluno";
+    String pass = "aluno123";
+    String sql = "SELECT id, nome, email FROM alunos WHERE curso = ? ORDER BY nome";
+    
+    try (Connection conn = DriverManager.getConnection(url, user, pass);
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setString(1, curso);
+        ResultSet rs = ps.executeQuery();
+        
+        System.out.println("=== ALUNOS DO CURSO: " + curso + " ===");
+        int contador = 0;
+        
+        while (rs.next()) {
+            contador++;
+            System.out.printf("%d. %s (%s)%n", 
+                rs.getInt("id"), 
+                rs.getString("nome"), 
+                rs.getString("email"));
+        }
+        
+        System.out.println("\n Total: " + contador + " aluno(s)");
+        
+    } catch (SQLException e) {
+        System.err.println("Erro: " + e.getMessage());
+    }
+}
+
+// Testes:
+listarPorCurso("Ciência da Computação");  // 4 alunos
+listarPorCurso("Sistemas de Informação"); // 3 alunos
+          </code></pre>
         </section>
 
-        <!-- Subsessão 2.13: Dicas Finais -->
-        <section>
-          <h3>💡 Dicas para Sucesso</h3>
-          <div style="text-align: left; font-size: 0.95em;">
-            <div style="background: #2c3e50; padding: 20px; border-radius: 10px; margin: 15px 0;">
-              <h4 style="color: #3498db; margin-top: 0;">📝 Antes de Começar:</h4>
-              <ul style="line-height: 1.8;">
-                <li>Teste SQL no phpMyAdmin primeiro</li>
-                <li>Leia todo o enunciado com atenção</li>
-                <li>Identifique quais tabelas usar</li>
-              </ul>
-            </div>
-            <div style="background: #2c3e50; padding: 20px; border-radius: 10px; margin: 15px 0;">
-              <h4 style="color: #e74c3c; margin-top: 0;">🐛 Durante o Desenvolvimento:</h4>
-              <ul style="line-height: 1.8;">
-                <li>Use <code>printStackTrace()</code> para debug</li>
-                <li>Teste cada método individualmente</li>
-                <li>Sempre feche conexões (try-with-resources)</li>
-              </ul>
-            </div>
-          </div>
-        </section>
 
+        
       </section>
 
       <!-- ENCERRAMENTO -->
